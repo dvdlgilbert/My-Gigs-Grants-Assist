@@ -1,6 +1,6 @@
 
 import React, { useState } from 'react';
-import type { NonprofitProfile } from '../types';
+import type { NonprofitProfile } from '../types.ts';
 
 interface ProfileFormProps {
   profile: NonprofitProfile;
