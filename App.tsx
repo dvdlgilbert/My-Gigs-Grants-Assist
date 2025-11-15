@@ -1,11 +1,11 @@
 
 import React, { useState } from 'react';
-import type { NonprofitProfile, GrantProject, AppView } from './types';
-import { useLocalStorage } from './hooks/useLocalStorage';
-import ProfileForm from './components/ProfileForm';
-import GrantFinder from './components/GrantFinder';
-import ProjectWorkspace from './components/ProjectWorkspace';
-import { UserCircleIcon, FolderIcon, MagnifyingGlassIcon, PlusIcon } from './components/Icons';
+import type { NonprofitProfile, GrantProject, AppView } from './types.ts';
+import { useLocalStorage } from './hooks/useLocalStorage.ts';
+import ProfileForm from './components/ProfileForm.tsx';
+import GrantFinder from './components/GrantFinder.tsx';
+import ProjectWorkspace from './components/ProjectWorkspace.tsx';
+import { UserCircleIcon, FolderIcon, MagnifyingGlassIcon, PlusIcon } from './components/Icons.tsx';
 
 const defaultProfile: NonprofitProfile = {
   orgName: '', mission: '', goals: '', needs: '', address: '', contactName: '', contactPhone: '', website: '', taxId: ''
