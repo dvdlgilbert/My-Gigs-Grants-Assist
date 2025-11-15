@@ -5,9 +5,12 @@ let ai: GoogleGenAI | null = null;
 
 function getAiInstance(): GoogleGenAI {
   if (!ai) {
-    const API_KEY = process.env.API_KEY;
+    // Gracefully handle environments where `process` is not defined (e.g., GitHub Pages).
+    const API_KEY = (typeof process !== 'undefined' && process.env) ? process.env.API_KEY : undefined;
+    
     if (!API_KEY) {
-      throw new Error("API_KEY environment variable not set. The app cannot contact the AI service.");
+      // This error will now be caught by the calling components and displayed in the UI.
+      throw new Error("API key is missing. AI features are unavailable. Please configure your deployment environment.");
     }
     ai = new GoogleGenAI({ apiKey: API_KEY });
   }
@@ -57,6 +60,9 @@ export async function findGrants(profile: NonprofitProfile): Promise<GrantRecomm
     return recommendations;
   } catch (error) {
     console.error("Error finding grants:", error);
+    if (error instanceof Error && error.message.includes("API key is missing")) {
+      throw error;
+    }
     throw new Error("Failed to fetch grant recommendations from AI. Please check your connection and API key setup.");
   }
 }
@@ -86,6 +92,9 @@ export async function getFormattingHelp(proposalText: string, grantInfo: string)
     return response.text;
   } catch (error) {
     console.error("Error getting formatting help:", error);
+    if (error instanceof Error && error.message.includes("API key is missing")) {
+      throw error;
+    }
     throw new Error("Failed to get formatting help from AI. Please check your connection and API key setup.");
   }
 }
