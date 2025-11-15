@@ -1,5 +1,5 @@
 import { GoogleGenAI, Type } from "@google/genai";
-import type { NonprofitProfile, GrantRecommendation } from '../types';
+import type { NonprofitProfile, GrantRecommendation } from '../types.ts';
 
 let ai: GoogleGenAI | null = null;
 
