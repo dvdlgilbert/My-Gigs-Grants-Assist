@@ -1,8 +1,8 @@
 
 import React, { useState } from 'react';
-import { findGrants } from '../services/geminiService';
-import type { NonprofitProfile, GrantRecommendation } from '../types';
-import { LightBulbIcon } from './Icons';
+import { findGrants } from '../services/geminiService.ts';
+import type { NonprofitProfile, GrantRecommendation } from '../types.ts';
+import { LightBulbIcon } from './Icons.tsx';
 
 interface GrantFinderProps {
   profile: NonprofitProfile;
