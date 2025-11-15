@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import type { GrantProject } from '../types.ts';
 import { getFormattingHelp } from '../services/geminiService.ts';
@@ -98,7 +97,8 @@ const ProjectWorkspace: React.FC<ProjectWorkspaceProps> = ({ project, onSave, on
           </div>
           <div className="w-full h-[60vh] p-3 border border-slate-200 bg-slate-50 rounded-md overflow-y-auto">
             {isAiLoading && <p className="text-slate-500">Generating feedback...</p>}
-            {aiHelp ? <article className="prose prose-sm max-w-none" dangerouslySetInnerHTML={{ __html: aiHelp.replace(/\n/g, '<br />') }} /> : <p className="text-slate-500">Click "Get Feedback" to receive AI-powered suggestions on your proposal.</p>}
+            {/* FIX: Replaced dangerouslySetInnerHTML with a safer method to display AI-generated content. This prevents an XSS vulnerability and may resolve the spurious compile errors. */}
+            {aiHelp ? <div className="prose prose-sm max-w-none" style={{ whiteSpace: 'pre-wrap' }}>{aiHelp}</div> : <p className="text-slate-500">Click "Get Feedback" to receive AI-powered suggestions on your proposal.</p>}
           </div>
         </div>
       </div>
