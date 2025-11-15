@@ -19,16 +19,12 @@
         },
       }
     </script>
-    <!-- Add Babel Standalone for in-browser TSX transpilation -->
-    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
   <script type="importmap">
 {
   "imports": {
     "react": "https://aistudiocdn.com/react@^19.2.0",
-    "react/": "https://aistudiocdn.com/react@^19.2.0/",
-    "react-dom": "https://aistudiocdn.com/react-dom@^19.2.0",
     "react-dom/": "https://aistudiocdn.com/react-dom@^19.2.0/",
-    "react-dom/client": "https://aistudiocdn.com/react-dom@^19.2.0/client",
+    "react/": "https://aistudiocdn.com/react@^19.2.0/",
     "@google/genai": "https://aistudiocdn.com/@google/genai@^1.29.1"
   }
 }
@@ -36,7 +32,12 @@
 </head>
   <body class="bg-slate-100">
     <div id="root"></div>
-    <!-- Configure Babel to transpile React and TypeScript -->
-    <script type="text/babel" data-type="module" data-presets="react,typescript" src="index.tsx"></script>
+    <!--
+      This script tag uses the esm.sh service to fetch your index.tsx file directly
+      from your GitHub repository. esm.sh transpiles the TSX code into standard JavaScript
+      on its servers and sends it to the browser with the correct Content-Type header,
+      bypassing the GitHub Pages MIME type issue.
+    -->
+    <script type="module" src="https://esm.sh/gh/dvdlgilbert/My-Gigs-Grants-Assist/index.tsx"></script>
   </body>
 </html>
