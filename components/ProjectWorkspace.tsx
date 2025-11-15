@@ -1,8 +1,8 @@
 
 import React, { useState, useEffect } from 'react';
-import type { GrantProject } from '../types';
-import { getFormattingHelp } from '../services/geminiService';
-import { ArrowLeftIcon, LightBulbIcon } from './Icons';
+import type { GrantProject } from '../types.ts';
+import { getFormattingHelp } from '../services/geminiService.ts';
+import { ArrowLeftIcon, LightBulbIcon } from './Icons.tsx';
 
 interface ProjectWorkspaceProps {
   project: GrantProject;
