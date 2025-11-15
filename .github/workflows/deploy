@@ -1,0 +1,48 @@
+# Workflow for deploying your static React app to GitHub Pages
+name: Deploy to GitHub Pages
+
+on:
+  # This runs the workflow automatically whenever you push to the 'main' branch
+  push:
+    branches: ["main"]
+  
+  # This allows you to run the workflow manually from the Actions tab in GitHub
+  workflow_dispatch:
+
+# Sets the necessary permissions for the workflow to deploy to GitHub Pages
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# Defines the actual job that will run
+jobs:
+  deploy:
+    # Configures the environment for GitHub Pages
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    
+    # Specifies that the job will run on the latest version of Ubuntu
+    runs-on: ubuntu-latest
+    
+    steps:
+      # Step 1: Checks out your repository code so the workflow can access it
+      - name: Checkout
+        uses: actions/checkout@v4
+        
+      # Step 2: Configures GitHub Pages settings
+      - name: Setup Pages
+        uses: actions/configure-pages@v5
+        
+      # Step 3: Takes all your project files and uploads them as a deployment artifact
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          # Tell it to upload everything from the root directory
+          path: '.'
+          
+      # Step 4: Deploys the uploaded artifact to GitHub Pages
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
