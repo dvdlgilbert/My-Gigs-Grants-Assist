@@ -7,7 +7,7 @@ function getAiInstance(): GoogleGenAI {
   const apiKeyFromStorage = localStorage.getItem('gemini-api-key');
   
   if (!apiKeyFromStorage) {
-    throw new Error("Gemini API Key not found. Please add your key in the header to use AI features.");
+    throw new Error("Gemini API Key not found. Please add your key in the header above to use AI features.");
   }
 
   // The key is stored as a JSON string (e.g., "\"your_key\""), so it needs to be parsed.
@@ -20,7 +20,7 @@ function getAiInstance(): GoogleGenAI {
   }
 
   if (!apiKey) {
-    throw new Error("Gemini API Key is empty. Please add your key in the header to use AI features.");
+    throw new Error("Gemini API Key is empty. Please add your key in the header above to use AI features.");
   }
   
   return new GoogleGenAI({ apiKey });
