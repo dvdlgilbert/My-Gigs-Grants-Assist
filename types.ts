@@ -7,6 +7,7 @@ export interface NonprofitProfile {
   address: string;
   contactName: string;
   contactPhone: string;
+  email: string;
   website: string;
   taxId: string;
 }
