@@ -111,3 +111,5 @@ export async function getFormattingHelp(proposalText: string, grantInfo: string)
       throw error;
     }
     throw new Error("Failed to get formatting help. Please check your connection and API key.");
+  }
+}
