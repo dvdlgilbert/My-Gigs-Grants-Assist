@@ -8,7 +8,7 @@ import ProjectWorkspace from './components/ProjectWorkspace.tsx';
 import { UserCircleIcon, FolderIcon, MagnifyingGlassIcon, PlusIcon, KeyIcon } from './components/Icons.tsx';
 
 const defaultProfile: NonprofitProfile = {
-  orgName: '', mission: '', goals: '', needs: '', address: '', contactName: '', contactPhone: '', website: '', taxId: ''
+  orgName: '', mission: '', goals: '', needs: '', address: '', contactName: '', contactPhone: '', email: '', website: '', taxId: ''
 };
 
 const Header: React.FC<{ apiKey: string; setApiKey: (key: string) => void; }> = ({ apiKey, setApiKey }) => (
@@ -168,7 +168,7 @@ const App: React.FC = () => {
     const renderContent = () => {
         switch (view) {
             case 'PROFILE':
-                return <ProfileForm profile={profile} onSave={handleSaveProfile} />;
+                return <ProfileForm profile={profile} onSave={handleSaveProfile} onBack={() => setView('DASHBOARD')} />;
             case 'FINDER':
                 return <GrantFinder profile={profile} onCreateProject={handleNewProject} />;
             case 'PROJECT':
