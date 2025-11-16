@@ -26,7 +26,13 @@ function getAiInstance(): GoogleGenAI {
   return new GoogleGenAI({ apiKey });
 }
 
-export async function findGrants(profile: NonprofitProfile): Promise<GrantRecommendation[]> {
+export async function findGrants(profile: NonprofitProfile, excludeGrants: GrantRecommendation[] = []): Promise<GrantRecommendation[]> {
+  let exclusionPrompt = '';
+  if (excludeGrants.length > 0) {
+    const exclusionList = excludeGrants.map(g => `- ${g.grantName} by ${g.funderName}`).join('\n');
+    exclusionPrompt = `\n\nPlease provide a new list of different grants. Do NOT include any of the following previously recommended grants:\n${exclusionList}`;
+  }
+
   const prompt = `
     Based on the following nonprofit profile, identify 5-7 potential grant opportunities. 
     For each, provide the funder name, grant name, a brief description, a website URL, and a reason why it's a good match.
@@ -35,7 +41,7 @@ export async function findGrants(profile: NonprofitProfile): Promise<GrantRecomm
     Mission: ${profile.mission}
     Goals: ${profile.goals}
     Needs: ${profile.needs}
-
+    ${exclusionPrompt}
     Return the data in a valid JSON array format. Do not include any introductory text or markdown formatting.
   `;
 
@@ -105,5 +111,3 @@ export async function getFormattingHelp(proposalText: string, grantInfo: string)
       throw error;
     }
     throw new Error("Failed to get formatting help. Please check your connection and API key.");
-  }
-}
