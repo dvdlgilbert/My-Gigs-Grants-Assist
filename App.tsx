@@ -12,27 +12,33 @@ const defaultProfile: NonprofitProfile = {
 };
 
 const Header: React.FC<{ apiKey: string; setApiKey: (key: string) => void; }> = ({ apiKey, setApiKey }) => (
-    <header className="bg-brand-dark shadow">
-        <div className="max-w-7xl mx-auto py-3 px-4 sm:px-6 lg:px-8 flex justify-between items-center gap-4 flex-wrap">
-            <h1 className="text-xl sm:text-2xl font-bold text-white tracking-tight">My Gigs - Grants Assist</h1>
-            <div className="flex items-center gap-2">
-                <div className="relative">
-                    <label htmlFor="api-key-input" className="sr-only">Gemini API Key</label>
-                    <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
-                        <KeyIcon className="h-5 w-5 text-slate-400" />
+    <header className="bg-brand-dark shadow-md z-10">
+        <div className="max-w-7xl mx-auto py-3 px-4 sm:px-6 lg:px-8">
+            <div className="flex justify-between items-center gap-4 flex-wrap">
+                <h1 className="text-xl sm:text-2xl font-bold text-white tracking-tight">My Gigs - Grants Assist</h1>
+                {/* API Key Input Section */}
+                <div className="flex flex-col items-end gap-1">
+                    <div className="flex items-center gap-2">
+                        <label htmlFor="api-key-input" className="sr-only">Gemini API Key</label>
+                        <div className="relative">
+                            <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
+                                <KeyIcon className="h-5 w-5 text-slate-400" />
+                            </div>
+                            <input
+                                id="api-key-input"
+                                type="password"
+                                placeholder="Enter Google AI API Key"
+                                value={apiKey}
+                                onChange={(e) => setApiKey(e.target.value)}
+                                className="block w-48 sm:w-64 rounded-md border-0 bg-white/10 py-1.5 pl-10 pr-3 text-white ring-1 ring-inset ring-white/20 focus:ring-2 focus:ring-inset focus:ring-sky-400 sm:text-sm sm:leading-6 placeholder:text-slate-300"
+                            />
+                        </div>
+                        <a href="https://aistudio.google.com/app/apikey" target="_blank" rel="noopener noreferrer" className="py-1.5 px-3 text-xs sm:text-sm text-white bg-sky-500 rounded-md hover:bg-sky-600 whitespace-nowrap font-semibold shadow">
+                            Get a Key
+                        </a>
                     </div>
-                    <input
-                        id="api-key-input"
-                        type="password"
-                        placeholder="Enter Gemini API Key"
-                        value={apiKey}
-                        onChange={(e) => setApiKey(e.target.value)}
-                        className="block w-48 sm:w-64 rounded-md border-0 bg-white/10 py-1.5 pl-10 pr-3 text-white ring-1 ring-inset ring-white/20 focus:ring-2 focus:ring-inset focus:ring-sky-400 sm:text-sm sm:leading-6 placeholder:text-slate-300"
-                    />
+                    <p className="text-xs text-slate-300">Your key is stored securely in your browser.</p>
                 </div>
-                <a href="https://aistudio.google.com/app/apikey" target="_blank" rel="noopener noreferrer" className="text-xs sm:text-sm text-sky-300 hover:text-white whitespace-nowrap">
-                    Get a Key
-                </a>
             </div>
         </div>
     </header>
