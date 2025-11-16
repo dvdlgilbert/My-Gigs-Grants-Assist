@@ -5,13 +5,14 @@ import type { NonprofitProfile } from '../types.ts';
 interface ProfileFormProps {
   profile: NonprofitProfile;
   onSave: (profile: NonprofitProfile) => void;
+  onBack: () => void;
 }
 
-const InputField: React.FC<{ label: string; id: keyof NonprofitProfile; value: string; onChange: (e: React.ChangeEvent<HTMLInputElement>) => void; required?: boolean; }> = ({ label, id, value, onChange, required }) => (
+const InputField: React.FC<{ label: string; id: keyof NonprofitProfile; value: string; onChange: (e: React.ChangeEvent<HTMLInputElement>) => void; type?: string; required?: boolean; }> = ({ label, id, value, onChange, type = "text", required }) => (
     <div>
         <label htmlFor={id} className="block text-sm font-medium text-slate-700">{label}</label>
         <input
-            type="text"
+            type={type}
             id={id}
             name={id}
             value={value}
@@ -37,7 +38,7 @@ const TextAreaField: React.FC<{ label: string; id: keyof NonprofitProfile; value
 );
 
 
-const ProfileForm: React.FC<ProfileFormProps> = ({ profile, onSave }) => {
+const ProfileForm: React.FC<ProfileFormProps> = ({ profile, onSave, onBack }) => {
   const [formData, setFormData] = useState<NonprofitProfile>(profile);
   const [showSuccess, setShowSuccess] = useState(false);
 
@@ -69,15 +70,21 @@ const ProfileForm: React.FC<ProfileFormProps> = ({ profile, onSave }) => {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <InputField label="Point of Contact" id="contactName" value={formData.contactName} onChange={handleChange} />
             <InputField label="Contact Phone" id="contactPhone" value={formData.contactPhone} onChange={handleChange} />
+            <InputField label="Contact Email" id="email" value={formData.email} onChange={handleChange} type="email" />
             <InputField label="Website" id="website" value={formData.website} onChange={handleChange} />
             <InputField label="Address" id="address" value={formData.address} onChange={handleChange} />
         </div>
 
-        <div className="flex justify-end items-center gap-4 pt-4">
-            {showSuccess && <p className="text-green-600">Profile saved successfully!</p>}
-            <button type="submit" className="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-brand-primary hover:bg-brand-dark focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-brand-primary">
-                Save Profile
+        <div className="flex justify-between items-center gap-4 pt-4">
+            <button type="button" onClick={onBack} className="inline-flex justify-center py-2 px-4 border border-slate-300 shadow-sm text-sm font-medium rounded-md text-slate-700 bg-white hover:bg-slate-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-brand-primary">
+                Back to Dashboard
             </button>
+            <div className="flex items-center gap-4">
+              {showSuccess && <p className="text-green-600">Profile saved successfully!</p>}
+              <button type="submit" className="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-brand-primary hover:bg-brand-dark focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-brand-primary">
+                  Save Profile
+              </button>
+            </div>
         </div>
       </form>
     </div>
