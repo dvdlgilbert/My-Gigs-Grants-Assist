@@ -1,22 +1,30 @@
+
 import { GoogleGenAI, Type } from "@google/genai";
 import type { NonprofitProfile, GrantRecommendation } from '../types.ts';
 
-let ai: GoogleGenAI | null = null;
-
 function getAiInstance(): GoogleGenAI {
-  if (!ai) {
-    // Gracefully handle environments where `process` is not defined (e.g., GitHub Pages).
-    const API_KEY = (typeof process !== 'undefined' && process.env) ? process.env.API_KEY : undefined;
-    
-    if (!API_KEY) {
-      // This error will now be caught by the calling components and displayed in the UI.
-      throw new Error("API key is missing. AI features are unavailable. Please configure your deployment environment.");
-    }
-    ai = new GoogleGenAI({ apiKey: API_KEY });
+  // Use localStorage to retrieve the API key, as it's set by the user in the UI.
+  const apiKeyFromStorage = localStorage.getItem('gemini-api-key');
+  
+  if (!apiKeyFromStorage) {
+    throw new Error("Gemini API Key not found. Please add your key in the header to use AI features.");
   }
-  return ai;
-}
 
+  // The key is stored as a JSON string (e.g., "\"your_key\""), so it needs to be parsed.
+  let apiKey: string;
+  try {
+    apiKey = JSON.parse(apiKeyFromStorage);
+  } catch (e) {
+    console.error("Could not parse the API Key from storage:", e);
+    throw new Error("Could not read the API Key from storage. Please try entering it again.");
+  }
+
+  if (!apiKey) {
+    throw new Error("Gemini API Key is empty. Please add your key in the header to use AI features.");
+  }
+  
+  return new GoogleGenAI({ apiKey });
+}
 
 export async function findGrants(profile: NonprofitProfile): Promise<GrantRecommendation[]> {
   const prompt = `
@@ -56,14 +64,15 @@ export async function findGrants(profile: NonprofitProfile): Promise<GrantRecomm
     });
 
     const jsonString = response.text;
-    const recommendations: GrantRecommendation[] = JSON.parse(jsonString);
-    return recommendations;
+    return JSON.parse(jsonString) as GrantRecommendation[];
   } catch (error) {
     console.error("Error finding grants:", error);
-    if (error instanceof Error && error.message.includes("API key is missing")) {
+    // Re-throw the original error if it's a user-facing one from getAiInstance, 
+    // otherwise throw a generic one for network/API issues.
+    if (error instanceof Error && error.message.includes("API Key")) {
       throw error;
     }
-    throw new Error("Failed to fetch grant recommendations from AI. Please check your connection and API key setup.");
+    throw new Error("Failed to fetch grant recommendations. Please check your connection and API key.");
   }
 }
 
@@ -92,9 +101,9 @@ export async function getFormattingHelp(proposalText: string, grantInfo: string)
     return response.text;
   } catch (error) {
     console.error("Error getting formatting help:", error);
-    if (error instanceof Error && error.message.includes("API key is missing")) {
+    if (error instanceof Error && error.message.includes("API Key")) {
       throw error;
     }
-    throw new Error("Failed to get formatting help from AI. Please check your connection and API key setup.");
+    throw new Error("Failed to get formatting help. Please check your connection and API key.");
   }
 }
