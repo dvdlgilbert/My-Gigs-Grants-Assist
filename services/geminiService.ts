@@ -1,28 +1,11 @@
-
 import { GoogleGenAI, Type } from "@google/genai";
 import type { NonprofitProfile, GrantRecommendation } from '../types.ts';
 
 function getAiInstance(): GoogleGenAI {
-  // Use localStorage to retrieve the API key, as it's set by the user in the UI.
-  const apiKeyFromStorage = localStorage.getItem('gemini-api-key');
-  
-  if (!apiKeyFromStorage) {
-    throw new Error("Gemini API Key not found. Please add your key in the header above to use AI features.");
-  }
-
-  // The key is stored as a JSON string (e.g., "\"your_key\""), so it needs to be parsed.
-  let apiKey: string;
-  try {
-    apiKey = JSON.parse(apiKeyFromStorage);
-  } catch (e) {
-    console.error("Could not parse the API Key from storage:", e);
-    throw new Error("Could not read the API Key from storage. Please try entering it again.");
-  }
-
+  const apiKey = process.env.API_KEY;
   if (!apiKey) {
-    throw new Error("Gemini API Key is empty. Please add your key in the header above to use AI features.");
+    throw new Error("Gemini API Key is not configured. Please ensure process.env.API_KEY is set.");
   }
-  
   return new GoogleGenAI({ apiKey });
 }
 
@@ -48,7 +31,7 @@ export async function findGrants(profile: NonprofitProfile, excludeGrants: Grant
   try {
     const aiClient = getAiInstance();
     const response = await aiClient.models.generateContent({
-      model: 'gemini-2.5-pro',
+      model: 'gemini-2.5-flash',
       contents: prompt,
       config: {
         responseMimeType: 'application/json',
@@ -73,12 +56,7 @@ export async function findGrants(profile: NonprofitProfile, excludeGrants: Grant
     return JSON.parse(jsonString) as GrantRecommendation[];
   } catch (error) {
     console.error("Error finding grants:", error);
-    // Re-throw the original error if it's a user-facing one from getAiInstance, 
-    // otherwise throw a generic one for network/API issues.
-    if (error instanceof Error && error.message.includes("API Key")) {
-      throw error;
-    }
-    throw new Error("Failed to fetch grant recommendations. Please check your connection and API key.");
+    throw new Error("Failed to fetch grant recommendations. Please check your connection and API key configuration.");
   }
 }
 
@@ -107,9 +85,6 @@ export async function getFormattingHelp(proposalText: string, grantInfo: string)
     return response.text;
   } catch (error) {
     console.error("Error getting formatting help:", error);
-    if (error instanceof Error && error.message.includes("API Key")) {
-      throw error;
-    }
-    throw new Error("Failed to get formatting help. Please check your connection and API key.");
+    throw new Error("Failed to get formatting help. Please check your connection and API key configuration.");
   }
 }
