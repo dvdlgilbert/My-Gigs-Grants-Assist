@@ -1,5 +1,5 @@
 
-import * as React from 'react';
+import React, { useState, useEffect } from 'react';
 import type { GrantProject } from '../types.ts';
 import { getFormattingHelp } from '../services/geminiService.ts';
 import { ArrowLeftIcon, LightBulbIcon } from './Icons.tsx';
@@ -11,14 +11,14 @@ interface ProjectWorkspaceProps {
 }
 
 const ProjectWorkspace: React.FC<ProjectWorkspaceProps> = ({ project, onSave, onBack }) => {
-  const [title, setTitle] = React.useState(project.grantTitle);
-  const [funder, setFunder] = React.useState(project.funder);
-  const [proposal, setProposal] = React.useState(project.proposal);
-  const [status, setStatus] = React.useState(project.status);
-  const [aiHelp, setAiHelp] = React.useState('');
-  const [isAiLoading, setIsAiLoading] = React.useState(false);
+  const [title, setTitle] = useState(project.grantTitle);
+  const [funder, setFunder] = useState(project.funder);
+  const [proposal, setProposal] = useState(project.proposal);
+  const [status, setStatus] = useState(project.status);
+  const [aiHelp, setAiHelp] = useState('');
+  const [isAiLoading, setIsAiLoading] = useState(false);
   
-  React.useEffect(() => {
+  useEffect(() => {
     const handler = setTimeout(() => {
       onSave({
         ...project,
@@ -98,7 +98,6 @@ const ProjectWorkspace: React.FC<ProjectWorkspaceProps> = ({ project, onSave, on
           </div>
           <div className="w-full h-[60vh] p-3 border border-slate-200 bg-slate-50 rounded-md overflow-y-auto">
             {isAiLoading && <p className="text-slate-500">Generating feedback...</p>}
-            {/* FIX: Replaced dangerouslySetInnerHTML with a safer method to display AI-generated content. This prevents an XSS vulnerability and may resolve the spurious compile errors. */}
             {aiHelp ? <div className="prose prose-sm max-w-none" style={{ whiteSpace: 'pre-wrap' }}>{aiHelp}</div> : <p className="text-slate-500">Click "Get Feedback" to receive AI-powered suggestions on your proposal.</p>}
           </div>
         </div>
