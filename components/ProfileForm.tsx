@@ -1,5 +1,5 @@
 
-import React, { useState } from 'react';
+import React from 'react';
 import type { NonprofitProfile } from '../types.ts';
 
 interface ProfileFormProps {
@@ -39,8 +39,8 @@ const TextAreaField: React.FC<{ label: string; id: keyof NonprofitProfile; value
 
 
 const ProfileForm: React.FC<ProfileFormProps> = ({ profile, onSave, onBack }) => {
-  const [formData, setFormData] = useState<NonprofitProfile>(profile);
-  const [showSuccess, setShowSuccess] = useState(false);
+  const [formData, setFormData] = React.useState<NonprofitProfile>(profile);
+  const [showSuccess, setShowSuccess] = React.useState(false);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
