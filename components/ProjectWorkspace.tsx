@@ -1,5 +1,5 @@
 
-import React from 'react';
+import * as React from 'react';
 import type { GrantProject } from '../types.ts';
 import { getFormattingHelp } from '../services/geminiService.ts';
 import { ArrowLeftIcon, LightBulbIcon } from './Icons.tsx';
