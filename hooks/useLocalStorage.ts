@@ -1,8 +1,9 @@
 
-import * as React from 'react';
+import { useState } from 'react';
+import type { Dispatch, SetStateAction } from 'react';
 
-export function useLocalStorage<T,>(key: string, initialValue: T): [T, React.Dispatch<React.SetStateAction<T>>] {
-  const [storedValue, setStoredValue] = React.useState<T>(() => {
+export function useLocalStorage<T,>(key: string, initialValue: T): [T, Dispatch<SetStateAction<T>>] {
+  const [storedValue, setStoredValue] = useState<T>(() => {
     try {
       const item = window.localStorage.getItem(key);
       return item ? JSON.parse(item) : initialValue;
@@ -12,7 +13,7 @@ export function useLocalStorage<T,>(key: string, initialValue: T): [T, React.Dis
     }
   });
 
-  const setValue: React.Dispatch<React.SetStateAction<T>> = (value) => {
+  const setValue: Dispatch<SetStateAction<T>> = (value) => {
     try {
       const valueToStore =
         value instanceof Function ? value(storedValue) : value;
@@ -24,3 +25,4 @@ export function useLocalStorage<T,>(key: string, initialValue: T): [T, React.Dis
   };
 
   return [storedValue, setValue];
+}
