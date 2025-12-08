@@ -2,9 +2,11 @@ import { GoogleGenAI, Type } from "@google/genai";
 import type { NonprofitProfile, GrantRecommendation } from '../types.ts';
 
 function getAiInstance(): GoogleGenAI {
-  const apiKey = process.env.API_KEY;
+  // Safely access process.env to prevent crashes in environments where process is undefined
+  const apiKey = (typeof process !== 'undefined' && process.env) ? process.env.API_KEY : undefined;
+  
   if (!apiKey) {
-    throw new Error("Gemini API Key is not configured. Please ensure process.env.API_KEY is set.");
+    throw new Error("Gemini API Key is not configured. Please check your environment variables.");
   }
   return new GoogleGenAI({ apiKey });
 }
@@ -53,10 +55,15 @@ export async function findGrants(profile: NonprofitProfile, excludeGrants: Grant
     });
 
     const jsonString = response.text;
+    if (!jsonString) {
+        throw new Error("Received empty response from AI.");
+    }
     return JSON.parse(jsonString) as GrantRecommendation[];
   } catch (error) {
     console.error("Error finding grants:", error);
-    throw new Error("Failed to fetch grant recommendations. Please check your connection and API key configuration.");
+    // Surface the actual error message to the UI
+    const errorMessage = error instanceof Error ? error.message : String(error);
+    throw new Error(`Failed to fetch grants: ${errorMessage}`);
   }
 }
 
@@ -82,9 +89,10 @@ export async function getFormattingHelp(proposalText: string, grantInfo: string)
       model: 'gemini-2.5-flash',
       contents: prompt,
     });
-    return response.text;
+    return response.text || "No suggestions generated.";
   } catch (error) {
     console.error("Error getting formatting help:", error);
-    throw new Error("Failed to get formatting help. Please check your connection and API key configuration.");
+    const errorMessage = error instanceof Error ? error.message : String(error);
+    throw new Error(`Failed to get formatting help: ${errorMessage}`);
   }
 }
