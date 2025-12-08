@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+
+import React from 'react';
 import type { NonprofitProfile, GrantProject, AppView } from './types.ts';
 import { useLocalStorage } from './hooks/useLocalStorage.ts';
 import ProfileForm from './components/ProfileForm.tsx';
@@ -100,8 +101,8 @@ const Dashboard: React.FC<{
 const App: React.FC = () => {
     const [profile, setProfile] = useLocalStorage<NonprofitProfile>('grant-assist-profile', defaultProfile);
     const [projects, setProjects] = useLocalStorage<GrantProject[]>('grant-assist-projects', []);
-    const [view, setView] = useState<AppView>('DASHBOARD');
-    const [selectedProjectId, setSelectedProjectId] = useState<string | null>(null);
+    const [view, setView] = React.useState<AppView>('DASHBOARD');
+    const [selectedProjectId, setSelectedProjectId] = React.useState<string | null>(null);
 
     const handleSaveProfile = (updatedProfile: NonprofitProfile) => {
         setProfile(updatedProfile);
@@ -153,10 +154,11 @@ const App: React.FC = () => {
             case 'FINDER':
                 return <GrantFinder profile={profile} onCreateProject={handleNewProject} />;
             case 'PROJECT':
+                // Adding key={selectedProject.id} forces a remount when the project changes, ensuring state is reset correctly.
                 return selectedProject ? <ProjectWorkspace key={selectedProject.id} project={selectedProject} onSave={handleSaveProject} onBack={handleBackToDashboard} /> : <div className="p-8">Project not found.</div>;
             case 'DASHBOARD':
             default:
-                return <Dashboard projects={projects} onNewProject={handleNewProject} onSelectProject={handleSelectProject} onDeleteProject={handleDeleteProject} />;
+                return <Dashboard projects={projects} onNewProject={() => handleNewProject()} onSelectProject={handleSelectProject} onDeleteProject={handleDeleteProject} />;
         }
     };
 
