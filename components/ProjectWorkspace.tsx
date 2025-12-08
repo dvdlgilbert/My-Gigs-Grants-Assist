@@ -1,4 +1,5 @@
-import React, { useState, useEffect } from 'react';
+
+import React from 'react';
 import type { GrantProject } from '../types.ts';
 import { getFormattingHelp } from '../services/geminiService.ts';
 import { ArrowLeftIcon, LightBulbIcon } from './Icons.tsx';
@@ -10,14 +11,14 @@ interface ProjectWorkspaceProps {
 }
 
 const ProjectWorkspace: React.FC<ProjectWorkspaceProps> = ({ project, onSave, onBack }) => {
-  const [title, setTitle] = useState(project.grantTitle);
-  const [funder, setFunder] = useState(project.funder);
-  const [proposal, setProposal] = useState(project.proposal);
-  const [status, setStatus] = useState(project.status);
-  const [aiHelp, setAiHelp] = useState('');
-  const [isAiLoading, setIsAiLoading] = useState(false);
+  const [title, setTitle] = React.useState(project.grantTitle);
+  const [funder, setFunder] = React.useState(project.funder);
+  const [proposal, setProposal] = React.useState(project.proposal);
+  const [status, setStatus] = React.useState(project.status);
+  const [aiHelp, setAiHelp] = React.useState('');
+  const [isAiLoading, setIsAiLoading] = React.useState(false);
   
-  useEffect(() => {
+  React.useEffect(() => {
     const handler = setTimeout(() => {
       onSave({
         ...project,
