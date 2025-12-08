@@ -1,5 +1,5 @@
 
-import React from 'react';
+import * as React from 'react';
 import { findGrants } from '../services/geminiService.ts';
 import type { NonprofitProfile, GrantRecommendation } from '../types.ts';
 import { LightBulbIcon, PlusIcon } from './Icons.tsx';
