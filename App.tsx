@@ -1,5 +1,5 @@
 
-import React, { useState } from 'react';
+import React from 'react';
 import type { NonprofitProfile, GrantProject, AppView } from './types.ts';
 import { useLocalStorage } from './hooks/useLocalStorage.ts';
 import ProfileForm from './components/ProfileForm.tsx';
@@ -101,16 +101,17 @@ const Dashboard: React.FC<{
 const App: React.FC = () => {
     const [profile, setProfile] = useLocalStorage<NonprofitProfile>('grant-assist-profile', defaultProfile);
     const [projects, setProjects] = useLocalStorage<GrantProject[]>('grant-assist-projects', []);
-    const [view, setView] = useState<AppView>('DASHBOARD');
-    const [selectedProjectId, setSelectedProjectId] = useState<string | null>(null);
+    const [view, setView] = React.useState<AppView>('DASHBOARD');
+    const [selectedProjectId, setSelectedProjectId] = React.useState<string | null>(null);
 
     const handleSaveProfile = (updatedProfile: NonprofitProfile) => {
         setProfile(updatedProfile);
     };
 
     const handleNewProject = (title?: string, funder?: string) => {
-        const projectTitle = typeof title === 'string' && title ? title : "New Grant Project";
-        const projectFunder = typeof funder === 'string' && funder ? funder : "Funder Name";
+        // Fix: Ensure we don't accidentally use the event object as a title string
+        const projectTitle = (typeof title === 'string' && title) ? title : "New Grant Project";
+        const projectFunder = (typeof funder === 'string' && funder) ? funder : "Funder Name";
 
         const newProject: GrantProject = {
             id: crypto.randomUUID(),
