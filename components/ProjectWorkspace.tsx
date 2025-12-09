@@ -1,5 +1,5 @@
 
-import React, { type FC } from 'react';
+import * as React from 'react';
 import type { GrantProject } from '../types.ts';
 import { getFormattingHelp } from '../services/geminiService.ts';
 import { ArrowLeftIcon, LightBulbIcon } from './Icons.tsx';
@@ -10,7 +10,7 @@ interface ProjectWorkspaceProps {
   onBack: () => void;
 }
 
-const ProjectWorkspace: FC<ProjectWorkspaceProps> = ({ project, onSave, onBack }) => {
+const ProjectWorkspace: React.FC<ProjectWorkspaceProps> = ({ project, onSave, onBack }) => {
   const [title, setTitle] = React.useState(project.grantTitle);
   const [funder, setFunder] = React.useState(project.funder);
   const [proposal, setProposal] = React.useState(project.proposal);
