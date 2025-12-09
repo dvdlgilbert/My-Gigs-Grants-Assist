@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import type { NonprofitProfile, GrantProject, AppView } from './types.ts';
 import { useLocalStorage } from './hooks/useLocalStorage.ts';
 import ProfileForm from './components/ProfileForm.tsx';
@@ -104,11 +104,15 @@ const App: React.FC = () => {
         setProfile(updatedProfile);
     };
 
-    const handleNewProject = (title: string = "New Grant Project", funder: string = "Funder Name") => {
+    const handleNewProject = (title: string, funder: string) => {
+        // Ensure we handle the case where title/funder are event objects or empty
+        const projectTitle = typeof title === 'string' ? title : "New Grant Project";
+        const projectFunder = typeof funder === 'string' ? funder : "Funder Name";
+        
         const newProject: GrantProject = {
             id: crypto.randomUUID(),
-            grantTitle: title,
-            funder: funder,
+            grantTitle: projectTitle,
+            funder: projectFunder,
             status: 'Draft',
             proposal: '',
             lastEdited: new Date().toISOString(),
@@ -147,10 +151,17 @@ const App: React.FC = () => {
             case 'FINDER':
                 return <GrantFinder profile={profile} onCreateProject={handleNewProject} />;
             case 'PROJECT':
-                return selectedProject ? <ProjectWorkspace project={selectedProject} onSave={handleSaveProject} onBack={handleBackToDashboard} /> : <div className="p-8">Project not found.</div>;
+                return selectedProject ? 
+                    <ProjectWorkspace 
+                        key={selectedProject.id} 
+                        project={selectedProject} 
+                        onSave={handleSaveProject} 
+                        onBack={handleBackToDashboard} 
+                    /> : 
+                    <div className="p-8">Project not found.</div>;
             case 'DASHBOARD':
             default:
-                return <Dashboard projects={projects} onNewProject={handleNewProject} onSelectProject={handleSelectProject} onDeleteProject={handleDeleteProject} />;
+                return <Dashboard projects={projects} onNewProject={() => handleNewProject("New Grant Project", "Funder Name")} onSelectProject={handleSelectProject} onDeleteProject={handleDeleteProject} />;
         }
     };
 
