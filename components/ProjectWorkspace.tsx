@@ -1,4 +1,3 @@
-
 import * as React from 'react';
 import type { GrantProject } from '../types.ts';
 import { getFormattingHelp } from '../services/geminiService.ts';
