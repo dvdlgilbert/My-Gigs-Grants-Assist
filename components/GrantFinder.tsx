@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { findGrants } from '../services/geminiService.ts';
 import type { NonprofitProfile, GrantRecommendation } from '../types.ts';
 import { LightBulbIcon, PlusIcon } from './Icons.tsx';
@@ -96,6 +96,7 @@ const GrantFinder: React.FC<GrantFinderProps> = ({ profile, onCreateProject }) =
                 </a>
                 <button 
                   onClick={() => onCreateProject(rec.grantName, rec.funderName)}
+                  title="Create a new project with this grant information"
                   className="flex-1 flex items-center justify-center gap-2 py-2 px-3 text-sm font-medium rounded-md text-white bg-brand-primary hover:bg-brand-dark"
                 >
                   <PlusIcon className="w-4 h-4" />
