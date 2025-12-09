@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React, { useState } from 'react';
 import { findGrants } from '../services/geminiService.ts';
 import type { NonprofitProfile, GrantRecommendation } from '../types.ts';
 import { LightBulbIcon, PlusIcon } from './Icons.tsx';
@@ -9,9 +9,9 @@ interface GrantFinderProps {
 }
 
 const GrantFinder: React.FC<GrantFinderProps> = ({ profile, onCreateProject }) => {
-  const [recommendations, setRecommendations] = React.useState<GrantRecommendation[]>([]);
-  const [isLoading, setIsLoading] = React.useState(false);
-  const [error, setError] = React.useState<string | null>(null);
+  const [recommendations, setRecommendations] = useState<GrantRecommendation[]>([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   const handleFindGrants = async (excludeCurrent: boolean = false) => {
     if (!profile.mission || !profile.orgName) {
@@ -96,7 +96,6 @@ const GrantFinder: React.FC<GrantFinderProps> = ({ profile, onCreateProject }) =
                 </a>
                 <button 
                   onClick={() => onCreateProject(rec.grantName, rec.funderName)}
-                  title={`Create new project for ${rec.grantName}`}
                   className="flex-1 flex items-center justify-center gap-2 py-2 px-3 text-sm font-medium rounded-md text-white bg-brand-primary hover:bg-brand-dark"
                 >
                   <PlusIcon className="w-4 h-4" />
