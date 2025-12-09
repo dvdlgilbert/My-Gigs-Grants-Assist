@@ -1,5 +1,5 @@
 
-import * as React from 'react';
+import { useState, type FC } from 'react';
 import type { NonprofitProfile, GrantProject, AppView } from './types.ts';
 import { useLocalStorage } from './hooks/useLocalStorage.ts';
 import ProfileForm from './components/ProfileForm.tsx';
@@ -11,7 +11,7 @@ const defaultProfile: NonprofitProfile = {
   orgName: '', mission: '', goals: '', needs: '', address: '', contactName: '', contactPhone: '', email: '', website: '', taxId: ''
 };
 
-const Header: React.FC = () => (
+const Header: FC = () => (
     <header className="bg-brand-dark shadow-md z-10">
         <div className="max-w-7xl mx-auto py-3 px-4 sm:px-6 lg:px-8">
             <div className="flex justify-between items-center gap-4 flex-wrap">
@@ -21,7 +21,7 @@ const Header: React.FC = () => (
     </header>
 );
 
-const Sidebar: React.FC<{ activeView: AppView, setView: (view: AppView) => void }> = ({ activeView, setView }) => {
+const Sidebar: FC<{ activeView: AppView, setView: (view: AppView) => void }> = ({ activeView, setView }) => {
     const navItems = [
         { id: 'DASHBOARD' as AppView, label: 'Grant Projects', icon: <FolderIcon className="h-5 w-5" /> },
         { id: 'FINDER' as AppView, label: 'Find Grants', icon: <MagnifyingGlassIcon className="h-5 w-5" /> },
@@ -49,7 +49,7 @@ const Sidebar: React.FC<{ activeView: AppView, setView: (view: AppView) => void 
     );
 };
 
-const Dashboard: React.FC<{
+const Dashboard: FC<{
     projects: GrantProject[];
     onNewProject: () => void;
     onSelectProject: (id: string) => void;
@@ -98,11 +98,11 @@ const Dashboard: React.FC<{
 };
 
 
-const App: React.FC = () => {
+const App: FC = () => {
     const [profile, setProfile] = useLocalStorage<NonprofitProfile>('grant-assist-profile', defaultProfile);
     const [projects, setProjects] = useLocalStorage<GrantProject[]>('grant-assist-projects', []);
-    const [view, setView] = React.useState<AppView>('DASHBOARD');
-    const [selectedProjectId, setSelectedProjectId] = React.useState<string | null>(null);
+    const [view, setView] = useState<AppView>('DASHBOARD');
+    const [selectedProjectId, setSelectedProjectId] = useState<string | null>(null);
 
     const handleSaveProfile = (updatedProfile: NonprofitProfile) => {
         setProfile(updatedProfile);
