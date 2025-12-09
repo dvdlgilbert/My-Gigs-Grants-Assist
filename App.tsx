@@ -1,5 +1,5 @@
 
-import { useState, type FC } from 'react';
+import React, { type FC } from 'react';
 import type { NonprofitProfile, GrantProject, AppView } from './types.ts';
 import { useLocalStorage } from './hooks/useLocalStorage.ts';
 import ProfileForm from './components/ProfileForm.tsx';
@@ -101,8 +101,8 @@ const Dashboard: FC<{
 const App: FC = () => {
     const [profile, setProfile] = useLocalStorage<NonprofitProfile>('grant-assist-profile', defaultProfile);
     const [projects, setProjects] = useLocalStorage<GrantProject[]>('grant-assist-projects', []);
-    const [view, setView] = useState<AppView>('DASHBOARD');
-    const [selectedProjectId, setSelectedProjectId] = useState<string | null>(null);
+    const [view, setView] = React.useState<AppView>('DASHBOARD');
+    const [selectedProjectId, setSelectedProjectId] = React.useState<string | null>(null);
 
     const handleSaveProfile = (updatedProfile: NonprofitProfile) => {
         setProfile(updatedProfile);
