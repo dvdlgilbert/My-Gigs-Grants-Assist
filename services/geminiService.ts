@@ -2,7 +2,9 @@ import { GoogleGenAI, Type } from "@google/genai";
 import type { NonprofitProfile, GrantRecommendation } from '../types.ts';
 
 function getAiInstance(): GoogleGenAI {
-  const apiKey = process.env.API_KEY;
+  // Safety check for browser environments where process might be undefined
+  const apiKey = (typeof process !== 'undefined' && process.env) ? process.env.API_KEY : '';
+  
   if (!apiKey) {
     throw new Error("Gemini API Key is not configured. Please ensure process.env.API_KEY is set.");
   }
