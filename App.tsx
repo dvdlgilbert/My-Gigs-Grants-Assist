@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React, { useState } from 'react';
 import type { NonprofitProfile, GrantProject, AppView } from './types.ts';
 import { useLocalStorage } from './hooks/useLocalStorage.ts';
 import ProfileForm from './components/ProfileForm.tsx';
@@ -58,10 +58,7 @@ const Dashboard: React.FC<{
         <div className="p-4 sm:p-6 lg:p-8">
             <div className="flex justify-between items-center mb-6">
                 <h1 className="text-2xl font-bold text-slate-800">Grant Projects</h1>
-                <button 
-                    onClick={() => onNewProject()} 
-                    className="inline-flex items-center gap-2 justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-brand-primary hover:bg-brand-dark focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-brand-primary"
-                >
+                <button onClick={onNewProject} className="inline-flex items-center gap-2 justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-brand-primary hover:bg-brand-dark focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-brand-primary">
                     <PlusIcon className="w-5 h-5" />
                     New Project
                 </button>
@@ -100,22 +97,18 @@ const Dashboard: React.FC<{
 const App: React.FC = () => {
     const [profile, setProfile] = useLocalStorage<NonprofitProfile>('grant-assist-profile', defaultProfile);
     const [projects, setProjects] = useLocalStorage<GrantProject[]>('grant-assist-projects', []);
-    const [view, setView] = React.useState<AppView>('DASHBOARD');
-    const [selectedProjectId, setSelectedProjectId] = React.useState<string | null>(null);
+    const [view, setView] = useState<AppView>('DASHBOARD');
+    const [selectedProjectId, setSelectedProjectId] = useState<string | null>(null);
 
     const handleSaveProfile = (updatedProfile: NonprofitProfile) => {
         setProfile(updatedProfile);
     };
 
-    const handleNewProject = (title?: string, funder?: string) => {
-        // Fix: Ensure we don't accidentally use the event object as a title string
-        const projectTitle = (typeof title === 'string' && title) ? title : "New Grant Project";
-        const projectFunder = (typeof funder === 'string' && funder) ? funder : "Funder Name";
-
+    const handleNewProject = (title: string = "New Grant Project", funder: string = "Funder Name") => {
         const newProject: GrantProject = {
             id: crypto.randomUUID(),
-            grantTitle: projectTitle,
-            funder: projectFunder,
+            grantTitle: title,
+            funder: funder,
             status: 'Draft',
             proposal: '',
             lastEdited: new Date().toISOString(),
@@ -154,10 +147,10 @@ const App: React.FC = () => {
             case 'FINDER':
                 return <GrantFinder profile={profile} onCreateProject={handleNewProject} />;
             case 'PROJECT':
-                return selectedProject ? <ProjectWorkspace key={selectedProject.id} project={selectedProject} onSave={handleSaveProject} onBack={handleBackToDashboard} /> : <div className="p-8">Project not found.</div>;
+                return selectedProject ? <ProjectWorkspace project={selectedProject} onSave={handleSaveProject} onBack={handleBackToDashboard} /> : <div className="p-8">Project not found.</div>;
             case 'DASHBOARD':
             default:
-                return <Dashboard projects={projects} onNewProject={() => handleNewProject()} onSelectProject={handleSelectProject} onDeleteProject={handleDeleteProject} />;
+                return <Dashboard projects={projects} onNewProject={handleNewProject} onSelectProject={handleSelectProject} onDeleteProject={handleDeleteProject} />;
         }
     };
 
