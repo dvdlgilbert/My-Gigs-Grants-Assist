@@ -1,5 +1,5 @@
 
-import * as React from 'react';
+import { useState, type FC } from 'react';
 import { findGrants } from '../services/geminiService.ts';
 import type { NonprofitProfile, GrantRecommendation } from '../types.ts';
 import { LightBulbIcon, PlusIcon } from './Icons.tsx';
@@ -9,10 +9,10 @@ interface GrantFinderProps {
   onCreateProject: (title: string, funder: string) => void;
 }
 
-const GrantFinder: React.FC<GrantFinderProps> = ({ profile, onCreateProject }) => {
-  const [recommendations, setRecommendations] = React.useState<GrantRecommendation[]>([]);
-  const [isLoading, setIsLoading] = React.useState(false);
-  const [error, setError] = React.useState<string | null>(null);
+const GrantFinder: FC<GrantFinderProps> = ({ profile, onCreateProject }) => {
+  const [recommendations, setRecommendations] = useState<GrantRecommendation[]>([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   const handleFindGrants = async (excludeCurrent: boolean = false) => {
     if (!profile.mission || !profile.orgName) {
