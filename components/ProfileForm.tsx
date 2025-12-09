@@ -1,4 +1,5 @@
-import { useState, type ChangeEvent, type FormEvent } from 'react';
+
+import * as React from 'react';
 import type { NonprofitProfile } from '../types.ts';
 
 interface ProfileFormProps {
@@ -7,7 +8,7 @@ interface ProfileFormProps {
   onBack: () => void;
 }
 
-const InputField: React.FC<{ label: string; id: keyof NonprofitProfile; value: string; onChange: (e: ChangeEvent<HTMLInputElement>) => void; type?: string; required?: boolean; }> = ({ label, id, value, onChange, type = "text", required }) => (
+const InputField: React.FC<{ label: string; id: keyof NonprofitProfile; value: string; onChange: (e: React.ChangeEvent<HTMLInputElement>) => void; type?: string; required?: boolean; }> = ({ label, id, value, onChange, type = "text", required }) => (
     <div>
         <label htmlFor={id} className="block text-sm font-medium text-slate-700">{label}</label>
         <input
@@ -22,7 +23,7 @@ const InputField: React.FC<{ label: string; id: keyof NonprofitProfile; value: s
     </div>
 );
 
-const TextAreaField: React.FC<{ label: string; id: keyof NonprofitProfile; value: string; onChange: (e: ChangeEvent<HTMLTextAreaElement>) => void; rows?: number; }> = ({ label, id, value, onChange, rows = 4 }) => (
+const TextAreaField: React.FC<{ label: string; id: keyof NonprofitProfile; value: string; onChange: (e: React.ChangeEvent<HTMLTextAreaElement>) => void; rows?: number; }> = ({ label, id, value, onChange, rows = 4 }) => (
     <div>
         <label htmlFor={id} className="block text-sm font-medium text-slate-700">{label}</label>
         <textarea
@@ -38,15 +39,15 @@ const TextAreaField: React.FC<{ label: string; id: keyof NonprofitProfile; value
 
 
 const ProfileForm: React.FC<ProfileFormProps> = ({ profile, onSave, onBack }) => {
-  const [formData, setFormData] = useState<NonprofitProfile>(profile);
-  const [showSuccess, setShowSuccess] = useState(false);
+  const [formData, setFormData] = React.useState<NonprofitProfile>(profile);
+  const [showSuccess, setShowSuccess] = React.useState(false);
 
-  const handleChange = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
     setFormData(prev => ({ ...prev, [name]: value }));
   };
 
-  const handleSubmit = (e: FormEvent) => {
+  const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     onSave(formData);
     setShowSuccess(true);
