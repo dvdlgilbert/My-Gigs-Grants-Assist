@@ -1,4 +1,3 @@
-
 import * as React from 'react';
 import type { NonprofitProfile, GrantProject, AppView } from './types.ts';
 import { useLocalStorage } from './hooks/useLocalStorage.ts';
