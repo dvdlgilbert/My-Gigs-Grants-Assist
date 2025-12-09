@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import * as React from 'react';
 import type { NonprofitProfile, GrantProject, AppView } from './types.ts';
 import { useLocalStorage } from './hooks/useLocalStorage.ts';
 import ProfileForm from './components/ProfileForm.tsx';
@@ -97,22 +97,22 @@ const Dashboard: React.FC<{
 const App: React.FC = () => {
     const [profile, setProfile] = useLocalStorage<NonprofitProfile>('grant-assist-profile', defaultProfile);
     const [projects, setProjects] = useLocalStorage<GrantProject[]>('grant-assist-projects', []);
-    const [view, setView] = useState<AppView>('DASHBOARD');
-    const [selectedProjectId, setSelectedProjectId] = useState<string | null>(null);
+    const [view, setView] = React.useState<AppView>('DASHBOARD');
+    const [selectedProjectId, setSelectedProjectId] = React.useState<string | null>(null);
 
     const handleSaveProfile = (updatedProfile: NonprofitProfile) => {
         setProfile(updatedProfile);
     };
 
-    const handleNewProject = (title: string, funder: string) => {
-        // Ensure we handle the case where title/funder are event objects or empty
-        const projectTitle = typeof title === 'string' ? title : "New Grant Project";
-        const projectFunder = typeof funder === 'string' ? funder : "Funder Name";
+    const handleNewProject = (title?: string, funder?: string) => {
+        // Safe defaults if title/funder are events or undefined
+        const safeTitle = (typeof title === 'string' && title) ? title : "New Grant Project";
+        const safeFunder = (typeof funder === 'string' && funder) ? funder : "Funder Name";
         
         const newProject: GrantProject = {
             id: crypto.randomUUID(),
-            grantTitle: projectTitle,
-            funder: projectFunder,
+            grantTitle: safeTitle,
+            funder: safeFunder,
             status: 'Draft',
             proposal: '',
             lastEdited: new Date().toISOString(),
@@ -161,7 +161,7 @@ const App: React.FC = () => {
                     <div className="p-8">Project not found.</div>;
             case 'DASHBOARD':
             default:
-                return <Dashboard projects={projects} onNewProject={() => handleNewProject("New Grant Project", "Funder Name")} onSelectProject={handleSelectProject} onDeleteProject={handleDeleteProject} />;
+                return <Dashboard projects={projects} onNewProject={() => handleNewProject()} onSelectProject={handleSelectProject} onDeleteProject={handleDeleteProject} />;
         }
     };
 
