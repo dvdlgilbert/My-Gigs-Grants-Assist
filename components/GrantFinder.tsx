@@ -1,4 +1,3 @@
-
 import * as React from 'react';
 import { findGrants } from '../services/geminiService.ts';
 import type { NonprofitProfile, GrantRecommendation } from '../types.ts';
