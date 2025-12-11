@@ -1,4 +1,10 @@
 {
+  "homepage": "https://dvdlgilbert.github.io/My-Gigs-Grants-Assist",
+  "name": "my-gigs-grants-assist",
+  "version": "0.1.0",
+  ...
+}
+{
   "name": "my-gigs-grants-assist",
   "version": "1.0.0",
   "private": true,
