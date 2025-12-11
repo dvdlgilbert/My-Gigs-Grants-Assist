@@ -1,3 +1,4 @@
+export type AppView = "DASHBOARD" | "PROFILE" | "FINDER" | "PROJECT" | "SETTINGS";
 
 export interface NonprofitProfile {
   orgName: string;
@@ -12,15 +13,6 @@ export interface NonprofitProfile {
   taxId: string;
 }
 
-export interface GrantProject {
-  id: string;
-  grantTitle: string;
-  funder: string;
-  status: 'Draft' | 'Submitted' | 'Awarded' | 'Declined';
-  proposal: string;
-  lastEdited: string;
-}
-
 export interface GrantRecommendation {
   funderName: string;
   grantName: string;
@@ -29,4 +21,12 @@ export interface GrantRecommendation {
   matchReason: string;
 }
 
-export type AppView = 'DASHBOARD' | 'PROFILE' | 'FINDER' | 'PROJECT';
+export interface GrantProject {
+  id: string;
+  grantTitle: string;
+  funder: string;
+  status: "Draft" | "Submitted" | "Awarded" | "Declined";
+  proposal: string;
+  lastEdited: string; // ISO string
+}
+

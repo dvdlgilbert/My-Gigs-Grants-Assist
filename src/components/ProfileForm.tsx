@@ -1,89 +1,164 @@
-import * as React from 'react';
-import type { NonprofitProfile } from '../types.ts';
+import React, { useState } from "react";
+import type { NonprofitProfile } from "../types";
 
-interface ProfileFormProps {
+export interface ProfileFormProps {
   profile: NonprofitProfile;
   onSave: (profile: NonprofitProfile) => void;
   onBack: () => void;
 }
 
-const InputField: React.FC<{ label: string; id: keyof NonprofitProfile; value: string; onChange: (e: React.ChangeEvent<HTMLInputElement>) => void; type?: string; required?: boolean; }> = ({ label, id, value, onChange, type = "text", required }) => (
-    <div>
-        <label htmlFor={id} className="block text-sm font-medium text-slate-700">{label}</label>
-        <input
-            type={type}
-            id={id}
-            name={id}
-            value={value}
-            onChange={onChange}
-            required={required}
-            className="mt-1 block w-full px-3 py-2 bg-white border border-slate-300 rounded-md shadow-sm placeholder-slate-400 focus:outline-none focus:ring-brand-primary focus:border-brand-primary sm:text-sm"
-        />
-    </div>
-);
-
-const TextAreaField: React.FC<{ label: string; id: keyof NonprofitProfile; value: string; onChange: (e: React.ChangeEvent<HTMLTextAreaElement>) => void; rows?: number; }> = ({ label, id, value, onChange, rows = 4 }) => (
-    <div>
-        <label htmlFor={id} className="block text-sm font-medium text-slate-700">{label}</label>
-        <textarea
-            id={id}
-            name={id}
-            value={value}
-            onChange={onChange}
-            rows={rows}
-            className="mt-1 block w-full px-3 py-2 bg-white border border-slate-300 rounded-md shadow-sm placeholder-slate-400 focus:outline-none focus:ring-brand-primary focus:border-brand-primary sm:text-sm"
-        />
-    </div>
-);
-
-
 const ProfileForm: React.FC<ProfileFormProps> = ({ profile, onSave, onBack }) => {
-  const [formData, setFormData] = React.useState<NonprofitProfile>(profile);
-  const [showSuccess, setShowSuccess] = React.useState(false);
+  const [formData, setFormData] = useState<NonprofitProfile>(profile);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
-    setFormData(prev => ({ ...prev, [name]: value }));
+    setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     onSave(formData);
-    setShowSuccess(true);
-    setTimeout(() => setShowSuccess(false), 3000);
   };
 
   return (
-    <div className="max-w-4xl mx-auto p-4 sm:p-6 lg:p-8">
-      <h1 className="text-2xl font-bold text-slate-800 mb-6">Nonprofit Profile</h1>
-      <form onSubmit={handleSubmit} className="space-y-6 bg-white p-8 rounded-lg shadow-md">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <InputField label="Organization Name" id="orgName" value={formData.orgName} onChange={handleChange} required />
-            <InputField label="501(c)(3) Tax ID" id="taxId" value={formData.taxId} onChange={handleChange} required />
-        </div>
-        <TextAreaField label="Mission Statement" id="mission" value={formData.mission} onChange={handleChange} />
-        <TextAreaField label="Organizational Goals" id="goals" value={formData.goals} onChange={handleChange} />
-        <TextAreaField label="Current Needs / Funding Gaps" id="needs" value={formData.needs} onChange={handleChange} />
-        
-        <h2 className="text-xl font-semibold text-slate-700 pt-4 border-t border-slate-200">Contact Information</h2>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <InputField label="Point of Contact" id="contactName" value={formData.contactName} onChange={handleChange} />
-            <InputField label="Contact Phone" id="contactPhone" value={formData.contactPhone} onChange={handleChange} />
-            <InputField label="Contact Email" id="email" value={formData.email} onChange={handleChange} type="email" />
-            <InputField label="Website" id="website" value={formData.website} onChange={handleChange} />
-            <InputField label="Address" id="address" value={formData.address} onChange={handleChange} />
+    <div className="p-6 border rounded-md bg-white shadow-md">
+      <h2 className="text-xl font-bold mb-4">Nonprofit Profile</h2>
+      <form onSubmit={handleSubmit} className="space-y-4">
+        {/* Organization Name + Tax ID side by side */}
+        <div className="flex space-x-4">
+          <div className="flex-1">
+            <label className="block text-sm font-semibold mb-1">Organization Name</label>
+            <input
+              type="text"
+              name="orgName"
+              value={formData.orgName}
+              onChange={handleChange}
+              className="w-full border rounded-md p-2 text-sm"
+            />
+          </div>
+          <div className="flex-1">
+            <label className="block text-sm font-semibold mb-1">Tax ID</label>
+            <input
+              type="text"
+              name="taxId"
+              value={formData.taxId}
+              onChange={handleChange}
+              className="w-full border rounded-md p-2 text-sm"
+            />
+          </div>
         </div>
 
-        <div className="flex justify-between items-center gap-4 pt-4">
-            <button type="button" onClick={onBack} className="inline-flex justify-center py-2 px-4 border border-slate-300 shadow-sm text-sm font-medium rounded-md text-slate-700 bg-white hover:bg-slate-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-brand-primary">
-                Back to Dashboard
-            </button>
-            <div className="flex items-center gap-4">
-              {showSuccess && <p className="text-green-600">Profile saved successfully!</p>}
-              <button type="submit" className="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-brand-primary hover:bg-brand-dark focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-brand-primary">
-                  Save Profile
-              </button>
-            </div>
+        {/* Mission */}
+        <div>
+          <label className="block text-sm font-semibold mb-1">Mission</label>
+          <textarea
+            name="mission"
+            value={formData.mission}
+            onChange={handleChange}
+            className="w-full border rounded-md p-2 text-sm"
+            rows={3}
+          />
+        </div>
+
+        {/* Goals */}
+        <div>
+          <label className="block text-sm font-semibold mb-1">Goals</label>
+          <textarea
+            name="goals"
+            value={formData.goals}
+            onChange={handleChange}
+            className="w-full border rounded-md p-2 text-sm"
+            rows={3}
+          />
+        </div>
+
+        {/* Needs */}
+        <div>
+          <label className="block text-sm font-semibold mb-1">Needs</label>
+          <textarea
+            name="needs"
+            value={formData.needs}
+            onChange={handleChange}
+            className="w-full border rounded-md p-2 text-sm"
+            rows={3}
+          />
+        </div>
+
+        {/* Address */}
+        <div>
+          <label className="block text-sm font-semibold mb-1">Address</label>
+          <input
+            type="text"
+            name="address"
+            value={formData.address}
+            onChange={handleChange}
+            className="w-full border rounded-md p-2 text-sm"
+          />
+        </div>
+
+        {/* Contact Name */}
+        <div>
+          <label className="block text-sm font-semibold mb-1">Contact Name</label>
+          <input
+            type="text"
+            name="contactName"
+            value={formData.contactName}
+            onChange={handleChange}
+            className="w-full border rounded-md p-2 text-sm"
+          />
+        </div>
+
+        {/* Contact Phone */}
+        <div>
+          <label className="block text-sm font-semibold mb-1">Contact Phone</label>
+          <input
+            type="text"
+            name="contactPhone"
+            value={formData.contactPhone}
+            onChange={handleChange}
+            className="w-full border rounded-md p-2 text-sm"
+          />
+        </div>
+
+        {/* Email */}
+        <div>
+          <label className="block text-sm font-semibold mb-1">Email</label>
+          <input
+            type="email"
+            name="email"
+            value={formData.email}
+            onChange={handleChange}
+            className="w-full border rounded-md p-2 text-sm"
+          />
+        </div>
+
+        {/* Website */}
+        <div>
+          <label className="block text-sm font-semibold mb-1">Website</label>
+          <input
+            type="text"
+            name="website"
+            value={formData.website}
+            onChange={handleChange}
+            className="w-full border rounded-md p-2 text-sm"
+          />
+        </div>
+
+        {/* Buttons */}
+        <div className="flex space-x-2 mt-4">
+          <button
+            type="submit"
+            className="bg-brand-primary text-white px-4 py-2 rounded-md hover:bg-brand-secondary"
+          >
+            Save Profile
+          </button>
+          <button
+            type="button"
+            onClick={onBack}
+            className="bg-slate-200 px-4 py-2 rounded-md hover:bg-slate-300"
+          >
+            Back to Dashboard
+          </button>
         </div>
       </form>
     </div>
