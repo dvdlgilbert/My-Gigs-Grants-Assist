@@ -1,12 +1,15 @@
 import React, { useState } from "react";
-import "./App.css";
+import Finder from "./Finder";
+import Dashboard from "./Dashboard";
+import "./App.css";     // global styles
+import "./Home.css";    // styles for Home view
 
 interface AppProps {
   initialView: string;
 }
 
 function App({ initialView }: AppProps) {
-  // Normalize the initial view: only allow known views, else default to "home"
+  // Normalize the view so only valid options are used
   const normalizeView = (view: string) => {
     const validViews = ["home", "finder", "dashboard"];
     return validViews.includes(view.toLowerCase()) ? view.toLowerCase() : "home";
@@ -14,19 +17,11 @@ function App({ initialView }: AppProps) {
 
   const [view, setView] = useState(normalizeView(initialView));
 
-  // Decide which CSS class to apply based on the view
-  const getViewClass = () => {
-    if (view === "finder") return "finder-view";
-    if (view === "dashboard") return "dashboard-view";
-    return "home-view";
-  };
-
   return (
     <div className="App">
+      {/* Header */}
       <header className="App-header">
         <h1>My Gigs Grants Assist</h1>
-
-        {/* Navigation buttons */}
         <nav>
           <button onClick={() => setView("home")}>Home</button>
           <button onClick={() => setView("finder")}>Finder</button>
@@ -34,11 +29,16 @@ function App({ initialView }: AppProps) {
         </nav>
       </header>
 
-      {/* Main content area with dynamic background */}
-      <main className={getViewClass()}>
-        {view === "home" && <p>Welcome to the Home view!</p>}
-        {view === "finder" && <p>Finder view loaded.</p>}
-        {view === "dashboard" && <p>Dashboard view loaded.</p>}
+      {/* Main content */}
+      <main>
+        {view === "home" && (
+          <div className="home-container">
+            <h2>Welcome to My Gigs Grants Assist</h2>
+            <p>This is the Home view. Add onboarding or instructions here.</p>
+          </div>
+        )}
+        {view === "finder" && <Finder />}
+        {view === "dashboard" && <Dashboard />}
       </main>
     </div>
   );
