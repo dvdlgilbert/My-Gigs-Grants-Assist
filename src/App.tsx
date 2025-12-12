@@ -1,8 +1,9 @@
 import React, { useState } from "react";
 import Finder from "./Finder";
 import Dashboard from "./Dashboard";
-import "./App.css";   // global layout & buttons
-import "./Home.css";  // styles for Home view
+import Profile from "./Profile";   // <-- import Profile
+import "./App.css";
+import "./Home.css";
 
 interface AppProps {
   initialView: string;
@@ -38,8 +39,13 @@ function App({ initialView }: AppProps) {
             <h2>Welcome to My Gigs Grants Assist</h2>
             <p>
               This is the Home view. Add onboarding, quick-start steps, and
-              links to Profile, Finder, and Dashboard.
+              links to Finder and Dashboard.
             </p>
+
+            {/* Profile section appears here, left‑justified */}
+            <div className="home-profile-section">
+              <Profile />
+            </div>
           </div>
         )}
 
