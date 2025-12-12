@@ -23,7 +23,6 @@ function App({ initialView }: AppProps) {
       {/* Header */}
       <header className="App-header">
         <h1>My Gigs Grants Assist</h1>
-
         <nav>
           <button onClick={() => setView("home")}>Home</button>
           <button onClick={() => setView("finder")}>Finder</button>
@@ -45,9 +44,7 @@ function App({ initialView }: AppProps) {
         )}
 
         {view === "finder" && <Finder />}
-
         {view === "dashboard" && <Dashboard />}
-
         {view === "mockup" && (
           <div className="home-container">
             <h2>Mockup training mode</h2>

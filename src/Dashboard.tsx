@@ -1,11 +1,15 @@
-// src/Dashboard.tsx
 import React from "react";
+import "./Dashboard.css";
 
 export default function Dashboard() {
   return (
-    <div>
+    <div className="dashboard-container">
       <h2>Dashboard</h2>
-      <p>Here you’ll show saved grants, progress, etc.</p>
+      <p>Your saved grants will appear here.</p>
+      <ul className="dashboard-list">
+        <li>Example grant #1</li>
+        <li>Example grant #2</li>
+      </ul>
     </div>
   );
 }

@@ -2,6 +2,7 @@ import React from "react";
 import ReactDOM from "react-dom/client";
 import App from "./App";
 import "./index.css";
+import "./App.css";   // ensure global styles are loaded
 
 // Determine initial view based on URL path
 const path = window.location.pathname.replace("/", "") || "home";

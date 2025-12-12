@@ -1,23 +1,20 @@
 /* Finder.css */
 
-/* Container for Finder view */
 .finder-container {
   max-width: 600px;
   margin: 0 auto;
   padding: 20px;
-  background-color: #f3f4f6; /* light gray */
+  background-color: #f3f4f6;
   border-radius: 8px;
   box-shadow: 0 2px 6px rgba(0,0,0,0.1);
 }
 
-/* Title */
 .finder-container h2 {
   font-size: 1.5rem;
   margin-bottom: 15px;
-  color: #1e3a8a; /* deep blue */
+  color: #1e3a8a;
 }
 
-/* Search form */
 .finder-container form {
   display: flex;
   gap: 10px;
@@ -32,7 +29,7 @@
 }
 
 .finder-container button {
-  background-color: #3b82f6; /* blue */
+  background-color: #3b82f6;
   border: none;
   color: white;
   padding: 10px 16px;
@@ -42,5 +39,5 @@
 }
 
 .finder-container button:hover {
-  background-color: #2563eb; /* darker blue */
+  background-color: #2563eb;
 }
