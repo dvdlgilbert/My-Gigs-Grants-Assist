@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import "./Profile.css";
 
-export default function Profile() {
+export default function Profile({ onBack }: { onBack?: () => void }) {
   // Organization fields
   const [orgName, setOrgName] = useState("");
   const [taxId, setTaxId] = useState("");
@@ -42,30 +42,28 @@ export default function Profile() {
         <fieldset>
           <legend>Organization</legend>
 
-          <div className="inline-fields">
-            <label>
-              Organization Name:
-              <input
-                type="text"
-                value={orgName}
-                onChange={(e) => setOrgName(e.target.value)}
-                placeholder="Enter organization name"
-              />
-            </label>
-
-            <label>
-              Tax ID:
-              <input
-                type="text"
-                value={taxId}
-                onChange={(e) => setTaxId(e.target.value)}
-                placeholder="Enter tax ID"
-              />
-            </label>
-          </div>
+          <label>
+            Organization Name
+            <input
+              type="text"
+              value={orgName}
+              onChange={(e) => setOrgName(e.target.value)}
+              placeholder="Enter organization name"
+            />
+          </label>
 
           <label>
-            Mission:
+            Tax ID
+            <input
+              type="text"
+              value={taxId}
+              onChange={(e) => setTaxId(e.target.value)}
+              placeholder="Enter tax ID"
+            />
+          </label>
+
+          <label>
+            Mission
             <textarea
               value={mission}
               onChange={(e) => setMission(e.target.value)}
@@ -74,7 +72,7 @@ export default function Profile() {
           </label>
 
           <label>
-            Goals:
+            Goals
             <textarea
               value={goals}
               onChange={(e) => setGoals(e.target.value)}
@@ -83,7 +81,7 @@ export default function Profile() {
           </label>
 
           <label>
-            Funding Objectives:
+            Funding Objectives
             <textarea
               value={fundingObjectives}
               onChange={(e) => setFundingObjectives(e.target.value)}
@@ -97,7 +95,7 @@ export default function Profile() {
           <legend>Contact</legend>
 
           <label>
-            Contact Name:
+            Contact Name
             <input
               type="text"
               value={contactName}
@@ -107,7 +105,7 @@ export default function Profile() {
           </label>
 
           <label>
-            Address:
+            Address
             <input
               type="text"
               value={address}
@@ -117,7 +115,7 @@ export default function Profile() {
           </label>
 
           <label>
-            Phone Number:
+            Phone Number
             <input
               type="tel"
               value={phone}
@@ -127,7 +125,7 @@ export default function Profile() {
           </label>
 
           <label>
-            Email Address:
+            Email Address
             <input
               type="email"
               value={email}
@@ -137,7 +135,7 @@ export default function Profile() {
           </label>
 
           <label>
-            Website:
+            Website
             <input
               type="url"
               value={website}
@@ -147,7 +145,12 @@ export default function Profile() {
           </label>
         </fieldset>
 
-        <button type="submit">Save Profile</button>
+        <div className="profile-buttons">
+          <button type="submit">Save Profile</button>
+          <button type="button" onClick={onBack}>
+            Back to Dashboard
+          </button>
+        </div>
       </form>
     </div>
   );

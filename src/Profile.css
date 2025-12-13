@@ -1,5 +1,3 @@
-/* Profile.css */
-
 .profile-container {
   max-width: 700px;
   margin: 0 auto;
@@ -7,6 +5,7 @@
   background-color: #f3f4f6;
   border-radius: 8px;
   box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+  text-align: left; /* left justify labels */
 }
 
 .profile-container h2 {
@@ -42,15 +41,6 @@ label {
   color: #374151;
 }
 
-.inline-fields {
-  display: flex;
-  gap: 20px;
-}
-
-.inline-fields label {
-  flex: 1;
-}
-
 input,
 textarea {
   margin-top: 6px;
@@ -65,7 +55,13 @@ textarea {
   resize: vertical;
 }
 
-button {
+.profile-buttons {
+  display: flex;
+  gap: 15px;
+  margin-top: 20px;
+}
+
+.profile-buttons button {
   background-color: #3b82f6;
   border: none;
   color: white;
@@ -76,6 +72,6 @@ button {
   transition: background-color 0.2s ease;
 }
 
-button:hover {
+.profile-buttons button:hover {
   background-color: #2563eb;
 }

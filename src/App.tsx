@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import Finder from "./Finder";
 import Dashboard from "./Dashboard";
-import Profile from "./Profile";   // <-- import Profile
+import Profile from "./Profile";
 import "./App.css";
 import "./Home.css";
 
@@ -10,7 +10,7 @@ interface AppProps {
 }
 
 function App({ initialView }: AppProps) {
-  const validViews = ["home", "finder", "dashboard", "mockup"];
+  const validViews = ["home", "finder", "dashboard", "mockup", "profile", "tools"];
 
   const normalizeView = (view: string) => {
     const v = view.toLowerCase();
@@ -42,9 +42,10 @@ function App({ initialView }: AppProps) {
               links to Finder and Dashboard.
             </p>
 
-            {/* Profile section appears here, left‑justified */}
-            <div className="home-profile-section">
-              <Profile />
+            {/* Two buttons below welcome text */}
+            <div className="home-buttons">
+              <button onClick={() => setView("profile")}>Profile</button>
+              <button onClick={() => setView("tools")}>Manage Grants</button>
             </div>
           </div>
         )}
@@ -55,6 +56,13 @@ function App({ initialView }: AppProps) {
           <div className="home-container">
             <h2>Mockup training mode</h2>
             <p>Use Mockup for training. This mode is for demo flows and UI practice.</p>
+          </div>
+        )}
+        {view === "profile" && <Profile />}
+        {view === "tools" && (
+          <div className="home-container">
+            <h2>Tools Management</h2>
+            <p>This will be the Manage Grants page (next phase).</p>
           </div>
         )}
       </main>
