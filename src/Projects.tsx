@@ -8,15 +8,15 @@ interface Project {
   funder: string;
 }
 
-export default function Projects() {
+export default function Projects({ onNavigate }: { onNavigate: (view: string) => void }) {
   const [projects, setProjects] = useState<Project[]>([
     { id: 1, title: "Community Outreach Program", funder: "Local Foundation" },
     { id: 2, title: "Youth Education Initiative", funder: "National Grant Fund" },
   ]);
 
   const handleOpen = (id: number) => {
-    alert(`Open project ${id}`);
-    // Later: navigate to ProjectWorkspace or editing view
+    // Later we can pass the project ID into ProjectWorkspace
+    onNavigate("workspace");
   };
 
   const handleDelete = (id: number) => {
