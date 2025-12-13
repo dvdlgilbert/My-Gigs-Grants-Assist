@@ -4,7 +4,7 @@ import Dashboard from "./Dashboard";
 import Profile from "./Profile";
 import Tools from "./Tools";
 import Projects from "./Projects";
-import ProjectWorkspace from "./components/ProjectWorkspace";
+import ProjectWorkspace from "./components/ProjectWorkspace"; // adjust path if needed
 import "./App.css";
 import "./Home.css";
 
@@ -13,7 +13,16 @@ interface AppProps {
 }
 
 function App({ initialView }: AppProps) {
-  const validViews = ["home", "finder", "dashboard", "mockup", "profile", "tools", "projects", "workspace"];
+  const validViews = [
+    "home",
+    "finder",
+    "dashboard",
+    "mockup",
+    "profile",
+    "tools",
+    "projects",
+    "workspace",
+  ];
 
   const normalizeView = (view: string) => {
     const v = view.toLowerCase();
@@ -65,7 +74,13 @@ function App({ initialView }: AppProps) {
         {view === "tools" && <Tools onNavigate={setView} />}
         {view === "profile" && <Profile onBack={() => setView("dashboard")} />}
         {view === "projects" && <Projects onNavigate={setView} />}
-        {view === "workspace" && <ProjectWorkspace />}
+        
+        {/* ✅ Fix: pass a placeholder project prop */}
+        {view === "workspace" && (
+          <ProjectWorkspace
+            project={{ id: 0, title: "Sample Project", funder: "Placeholder Funder" }}
+          />
+        )}
       </main>
     </div>
   );
