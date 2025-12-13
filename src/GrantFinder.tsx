@@ -1,32 +1,50 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { findGrants } from "./services/geminiService";
 import type { NonprofitProfile, GrantRecommendation } from "./types";
+import ProfileForm from "./components/ProfileForm"; // ✅ use your existing form
+
+const STORAGE_KEY = "nonprofit_profile";
 
 const GrantFinder: React.FC = () => {
-  const [query, setQuery] = useState("");
+  const [profile, setProfile] = useState<NonprofitProfile>({
+    orgName: "",
+    taxId: "",
+    mission: "",
+    goals: "",
+    needs: "",
+    address: "",
+    contactName: "",
+    contactPhone: "",
+    email: "",
+    website: "",
+  });
+
   const [results, setResults] = useState<GrantRecommendation[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [showForm, setShowForm] = useState(true);
 
-  const handleSearch = async () => {
+  // 🔑 Load saved profile from localStorage on mount
+  useEffect(() => {
+    const saved = localStorage.getItem(STORAGE_KEY);
+    if (saved) {
+      try {
+        setProfile(JSON.parse(saved));
+      } catch {
+        console.warn("Invalid profile JSON in localStorage");
+      }
+    }
+  }, []);
+
+  const handleSaveProfile = async (updatedProfile: NonprofitProfile) => {
+    setProfile(updatedProfile);
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(updatedProfile));
+    setShowForm(false);
     setLoading(true);
     setError(null);
-    try {
-      // For now, build a simple profile from the query string
-      const profile: NonprofitProfile = {
-        orgName: "Demo Nonprofit",
-        mission: query,
-        goals: "Expand services",
-        needs: "Funding support",
-        address: "123 Main St",
-        contactName: "Jane Doe",
-        contactPhone: "555-1234",
-        email: "demo@example.org",
-        website: "https://example.org",
-        taxId: "12-3456789",
-      };
 
-      const recs = await findGrants(profile);
+    try {
+      const recs = await findGrants(updatedProfile);
       setResults(recs);
     } catch (err: any) {
       setError(err.message || "Search failed");
@@ -38,38 +56,45 @@ const GrantFinder: React.FC = () => {
   return (
     <div className="grant-finder">
       <h3>Grant Finder</h3>
-      <p>Search for potential funding opportunities for your nonprofit projects.</p>
+      <p>Enter your nonprofit profile to discover funding opportunities.</p>
 
-      <input
-        type="text"
-        placeholder="Enter keywords (e.g., education, housing)"
-        value={query}
-        onChange={(e) => setQuery(e.target.value)}
-      />
-      <button onClick={handleSearch} disabled={loading}>
-        {loading ? "Searching..." : "Search"}
-      </button>
-
-      {error && <p className="text-red-600">{error}</p>}
-
-      <div className="results mt-4 space-y-3">
-        {results.map((grant, idx) => (
-          <div key={idx} className="border rounded-md p-3">
-            <h4 className="font-bold">{grant.grantName}</h4>
-            <p className="text-sm text-slate-700">Funder: {grant.funderName}</p>
-            <p className="text-sm">{grant.description}</p>
-            <a
-              href={grant.website}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-blue-600 underline text-sm"
-            >
-              Visit Website
-            </a>
-            <p className="text-xs text-slate-500 mt-1">{grant.matchReason}</p>
-          </div>
-        ))}
-      </div>
+      {showForm ? (
+        <ProfileForm
+          profile={profile}
+          onSave={handleSaveProfile}
+          onBack={() => setShowForm(false)}
+        />
+      ) : (
+        <div className="results mt-4 space-y-3">
+          {loading && <p>Searching for grants...</p>}
+          {error && <p className="text-red-600">{error}</p>}
+          {results.length === 0 && !loading && (
+            <p>No grants found. Try adjusting your profile.</p>
+          )}
+          {results.map((grant, idx) => (
+            <div key={idx} className="border rounded-md p-3">
+              <h4 className="font-bold">{grant.grantName}</h4>
+              <p className="text-sm text-slate-700">Funder: {grant.funderName}</p>
+              <p className="text-sm">{grant.description}</p>
+              <a
+                href={grant.website}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-blue-600 underline text-sm"
+              >
+                Visit Website
+              </a>
+              <p className="text-xs text-slate-500 mt-1">{grant.matchReason}</p>
+            </div>
+          ))}
+          <button
+            onClick={() => setShowForm(true)}
+            className="mt-4 bg-slate-200 px-4 py-2 rounded-md hover:bg-slate-300"
+          >
+            Edit Profile
+          </button>
+        </div>
+      )}
     </div>
   );
 };
