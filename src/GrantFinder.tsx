@@ -1,7 +1,9 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { findGrants } from "./services/geminiService";
 import type { NonprofitProfile, GrantRecommendation } from "./types";
-import ProfileForm from "./components/ProfileForm"; // ✅ import your cleaner form
+import ProfileForm from "./components/ProfileForm";
+
+const STORAGE_KEY = "nonprofit_profile";
 
 const GrantFinder: React.FC = () => {
   const [profile, setProfile] = useState<NonprofitProfile>({
@@ -22,9 +24,25 @@ const GrantFinder: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   const [showForm, setShowForm] = useState(true);
 
+  // 🔑 Load saved profile from localStorage on mount
+  useEffect(() => {
+    const saved = localStorage.getItem(STORAGE_KEY);
+    if (saved) {
+      try {
+        setProfile(JSON.parse(saved));
+      } catch {
+        console.warn("Invalid profile JSON in localStorage");
+      }
+    }
+  }, []);
+
   const handleSaveProfile = async (updatedProfile: NonprofitProfile) => {
     setProfile(updatedProfile);
     setShowForm(false);
+
+    // 💾 Save profile to localStorage
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(updatedProfile));
+
     setLoading(true);
     setError(null);
 
