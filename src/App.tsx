@@ -4,8 +4,9 @@ import Dashboard from "./Dashboard";
 import Profile from "./Profile";
 import Tools from "./Tools";
 import Projects from "./Projects";
-import ProjectWorkspace from "./components/ProjectWorkspace"; // adjust path if needed
-import type { GrantProject } from "./types"; // adjust path if your types file is elsewhere
+import ProjectWorkspace from "./components/ProjectWorkspace";
+import ManageGrants from "./ManageGrants"; // ✅ new page
+import type { GrantProject } from "./types";
 import "./App.css";
 import "./Home.css";
 
@@ -14,7 +15,17 @@ interface AppProps {
 }
 
 function App({ initialView }: AppProps) {
-  const validViews = ["home", "finder", "dashboard", "mockup", "profile", "tools", "projects", "workspace"];
+  const validViews = [
+    "home",
+    "finder",
+    "dashboard",
+    "mockup",
+    "profile",
+    "tools",
+    "projects",
+    "workspace",
+    "managegrants", // ✅ new view
+  ];
 
   const normalizeView = (view: string) => {
     const v = view.toLowerCase();
@@ -34,6 +45,7 @@ function App({ initialView }: AppProps) {
           <button onClick={() => setView("finder")}>Finder</button>
           <button onClick={() => setView("dashboard")}>Dashboard</button>
           <button onClick={() => setView("mockup")}>Mockup</button>
+          <button onClick={() => setView("managegrants")}>Manage Grants</button> {/* ✅ new button */}
         </nav>
       </header>
 
@@ -43,11 +55,13 @@ function App({ initialView }: AppProps) {
           <>
             <div className="home-container">
               <h2>Welcome to My Gigs Grants Assist</h2>
-              <p>This is the Home view. Add onboarding, quick-start steps, and links to Finder and Dashboard.</p>
+              <p>
+                This is the Home view. Add onboarding, quick-start steps, and links to Finder and Dashboard.
+              </p>
             </div>
 
             <div className="home-buttons">
-              <button onClick={() => setView("tools")}>Manage Grants</button>
+              <button onClick={() => setView("tools")}>Manage Grants (Legacy)</button>
               <button onClick={() => setView("profile")}>Profile</button>
             </div>
           </>
@@ -71,6 +85,7 @@ function App({ initialView }: AppProps) {
             onUpdate={(updated) => setSelectedProject(updated)}
           />
         )}
+        {view === "managegrants" && <ManageGrants />} {/* ✅ new view */}
       </main>
     </div>
   );
