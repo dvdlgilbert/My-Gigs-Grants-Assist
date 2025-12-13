@@ -5,6 +5,7 @@ import Profile from "./Profile";
 import "./App.css";
 import "./Home.css";
 import Tools from "./Tools";
+import Projects from "./Projects";
 
 interface AppProps {
   initialView: string;
@@ -66,6 +67,7 @@ function App({ initialView }: AppProps) {
 
   {/* Profile form */}
   {view === "profile" && <Profile onBack={() => setView("dashboard")} />}
+  {view === "projects" && <Projects />}
 </main>      
     </div>
   );
