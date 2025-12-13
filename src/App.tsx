@@ -78,7 +78,7 @@ function App({ initialView }: AppProps) {
         {/* ✅ Fix: pass a placeholder project prop */}
         {view === "workspace" && (
           <ProjectWorkspace
-            project={{ id: "0", title: "Sample Project", funder: "Placeholder Funder" }}
+            project={{ id: "0", name: "Sample Project", funder: "Placeholder Funder" }}
           />
         )}
       </main>
