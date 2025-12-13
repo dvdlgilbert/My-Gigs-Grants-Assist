@@ -4,7 +4,6 @@ import Dashboard from "./Dashboard";
 import Profile from "./Profile";
 import Tools from "./Tools";
 import ProjectWorkspace from "./components/ProjectWorkspace";
-import ProjectWorkspace from "./ProjectWorkspace"; // existing file from your original batch
 import "./App.css";
 import "./Home.css";
 
