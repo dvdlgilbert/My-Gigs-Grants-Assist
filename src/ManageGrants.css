@@ -26,3 +26,12 @@
   padding: 1rem;
   border-radius: 4px;
 }
+
+.mock-toggle {
+  margin: 1rem 0;
+  font-size: 0.9rem;
+}
+
+.mock-toggle input {
+  margin-right: 0.5rem;
+}
