@@ -5,6 +5,7 @@ import Profile from "./Profile";
 import Tools from "./Tools";
 import Projects from "./Projects";
 import ProjectWorkspace from "./components/ProjectWorkspace"; // adjust path if needed
+import type { GrantProject } from "./types"; // adjust path if your types file is elsewhere
 import "./App.css";
 import "./Home.css";
 
@@ -13,16 +14,7 @@ interface AppProps {
 }
 
 function App({ initialView }: AppProps) {
-  const validViews = [
-    "home",
-    "finder",
-    "dashboard",
-    "mockup",
-    "profile",
-    "tools",
-    "projects",
-    "workspace",
-  ];
+  const validViews = ["home", "finder", "dashboard", "mockup", "profile", "tools", "projects", "workspace"];
 
   const normalizeView = (view: string) => {
     const v = view.toLowerCase();
@@ -30,6 +22,7 @@ function App({ initialView }: AppProps) {
   };
 
   const [view, setView] = useState<string>(normalizeView(initialView));
+  const [selectedProject, setSelectedProject] = useState<GrantProject | null>(null);
 
   return (
     <div className="App">
@@ -50,10 +43,7 @@ function App({ initialView }: AppProps) {
           <>
             <div className="home-container">
               <h2>Welcome to My Gigs Grants Assist</h2>
-              <p>
-                This is the Home view. Add onboarding, quick-start steps, and
-                links to Finder and Dashboard.
-              </p>
+              <p>This is the Home view. Add onboarding, quick-start steps, and links to Finder and Dashboard.</p>
             </div>
 
             <div className="home-buttons">
@@ -73,12 +63,12 @@ function App({ initialView }: AppProps) {
         )}
         {view === "tools" && <Tools onNavigate={setView} />}
         {view === "profile" && <Profile onBack={() => setView("dashboard")} />}
-        {view === "projects" && <Projects onNavigate={setView} />}
-        
-        {/* ✅ Fix: pass a placeholder project prop */}
-        {view === "workspace" && (
+        {view === "projects" && <Projects onNavigate={setView} onSelect={setSelectedProject} />}
+        {view === "workspace" && selectedProject && (
           <ProjectWorkspace
-            project={{ id: "0", title: "Sample Project", funder: "Placeholder Funder" }}
+            project={selectedProject}
+            onClose={() => setView("projects")}
+            onUpdate={(updated) => setSelectedProject(updated)}
           />
         )}
       </main>

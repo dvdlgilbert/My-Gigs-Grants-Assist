@@ -1,25 +1,34 @@
 import React, { useState } from "react";
 import ProjectCard from "./ProjectCard";
 import "./Projects.css";
+import type { GrantProject } from "./types"; // adjust path if your types file is elsewhere
 
-interface Project {
-  id: number;
-  title: string;
-  funder: string;
-}
-
-export default function Projects({ onNavigate }: { onNavigate: (view: string) => void }) {
-  const [projects, setProjects] = useState<Project[]>([
-    { id: 1, title: "Community Outreach Program", funder: "Local Foundation" },
-    { id: 2, title: "Youth Education Initiative", funder: "National Grant Fund" },
+export default function Projects({ onNavigate, onSelect }: { onNavigate: (view: string) => void; onSelect: (project: GrantProject) => void }) {
+  const [projects, setProjects] = useState<GrantProject[]>([
+    {
+      id: "1",
+      grantTitle: "Community Outreach Program",
+      funder: "Local Foundation",
+      proposal: "",
+      status: "Draft",
+      lastEdited: new Date().toISOString(),
+    },
+    {
+      id: "2",
+      grantTitle: "Youth Education Initiative",
+      funder: "National Grant Fund",
+      proposal: "",
+      status: "Draft",
+      lastEdited: new Date().toISOString(),
+    },
   ]);
 
-  const handleOpen = (id: number) => {
-    // Later we can pass the project ID into ProjectWorkspace
-    onNavigate("workspace");
+  const handleOpen = (project: GrantProject) => {
+    onSelect(project);       // store selected project in App state
+    onNavigate("workspace"); // navigate to workspace view
   };
 
-  const handleDelete = (id: number) => {
+  const handleDelete = (id: string) => {
     if (window.confirm("Are you sure you want to delete this project?")) {
       setProjects(projects.filter((p) => p.id !== id));
     }
@@ -34,9 +43,9 @@ export default function Projects({ onNavigate }: { onNavigate: (view: string) =>
         {projects.map((project) => (
           <ProjectCard
             key={project.id}
-            title={project.title}
+            title={project.grantTitle}
             funder={project.funder}
-            onOpen={() => handleOpen(project.id)}
+            onOpen={() => handleOpen(project)}
             onDelete={() => handleDelete(project.id)}
           />
         ))}
