@@ -42,10 +42,10 @@ function App({ initialView }: AppProps) {
               links to Finder and Dashboard.
             </p>
 
-            {/* Two buttons below welcome text */}
+            {/* Two stacked buttons */}
             <div className="home-buttons">
-              <button onClick={() => setView("profile")}>Profile</button>
               <button onClick={() => setView("tools")}>Manage Grants</button>
+              <button onClick={() => setView("profile")}>Profile</button>
             </div>
           </div>
         )}
@@ -58,7 +58,7 @@ function App({ initialView }: AppProps) {
             <p>Use Mockup for training. This mode is for demo flows and UI practice.</p>
           </div>
         )}
-        {view === "profile" && <Profile />}
+        {view === "profile" && <Profile onBack={() => setView("dashboard")} />}
         {view === "tools" && (
           <div className="home-container">
             <h2>Tools Management</h2>

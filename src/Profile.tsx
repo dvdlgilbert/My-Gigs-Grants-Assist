@@ -18,6 +18,13 @@ export default function Profile({ onBack }: { onBack?: () => void }) {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+
+    // Simple validation
+    if (!orgName || !contactName || !email) {
+      alert("Please fill in Organization Name, Contact Name, and Email before saving.");
+      return;
+    }
+
     const profileData = {
       orgName,
       taxId,
