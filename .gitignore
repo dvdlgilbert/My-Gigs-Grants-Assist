@@ -2,3 +2,7 @@
 *.docx
 ~$*
 *.tmp
+# React defaults
+node_modules/
+build/
+.env
