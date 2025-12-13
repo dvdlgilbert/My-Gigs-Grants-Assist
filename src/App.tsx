@@ -35,19 +35,21 @@ function App({ initialView }: AppProps) {
       {/* Main content */}
       <main>
         {view === "home" && (
-          <div className="home-container">
-            <h2>Welcome to My Gigs Grants Assist</h2>
-            <p>
-              This is the Home view. Add onboarding, quick-start steps, and
-              links to Finder and Dashboard.
-            </p>
+          <>
+            <div className="home-container">
+              <h2>Welcome to My Gigs Grants Assist</h2>
+              <p>
+                This is the Home view. Add onboarding, quick-start steps, and
+                links to Finder and Dashboard.
+              </p>
+            </div>
 
-            {/* Two stacked buttons */}
+            {/* Buttons outside the welcome pane */}
             <div className="home-buttons">
               <button onClick={() => setView("tools")}>Manage Grants</button>
               <button onClick={() => setView("profile")}>Profile</button>
             </div>
-          </div>
+          </>
         )}
 
         {view === "finder" && <Finder />}
