@@ -1,31 +1,55 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import ProjectCard from "./ProjectCard";
 import "./Projects.css";
-import type { GrantProject } from "./types"; // adjust path if your types file is elsewhere
+import type { GrantProject } from "./types";
 
-export default function Projects({ onNavigate, onSelect }: { onNavigate: (view: string) => void; onSelect: (project: GrantProject) => void }) {
-  const [projects, setProjects] = useState<GrantProject[]>([
-    {
-      id: "1",
-      grantTitle: "Community Outreach Program",
-      funder: "Local Foundation",
-      proposal: "",
-      status: "Draft",
-      lastEdited: new Date().toISOString(),
-    },
-    {
-      id: "2",
-      grantTitle: "Youth Education Initiative",
-      funder: "National Grant Fund",
-      proposal: "",
-      status: "Draft",
-      lastEdited: new Date().toISOString(),
-    },
-  ]);
+export default function Projects({
+  onNavigate,
+  onSelect,
+}: {
+  onNavigate: (view: string) => void;
+  onSelect: (project: GrantProject) => void;
+}) {
+  const [projects, setProjects] = useState<GrantProject[]>([]);
+
+  // Load projects from localStorage on mount
+  useEffect(() => {
+    const stored = localStorage.getItem("projects");
+    if (stored) {
+      setProjects(JSON.parse(stored));
+    } else {
+      // Seed with dummy projects if none exist
+      const seed: GrantProject[] = [
+        {
+          id: "1",
+          grantTitle: "Community Outreach Program",
+          funder: "Local Foundation",
+          proposal: "",
+          status: "Draft",
+          lastEdited: new Date().toISOString(),
+        },
+        {
+          id: "2",
+          grantTitle: "Youth Education Initiative",
+          funder: "National Grant Fund",
+          proposal: "",
+          status: "Draft",
+          lastEdited: new Date().toISOString(),
+        },
+      ];
+      setProjects(seed);
+      localStorage.setItem("projects", JSON.stringify(seed));
+    }
+  }, []);
+
+  // Save projects to localStorage whenever they change
+  useEffect(() => {
+    localStorage.setItem("projects", JSON.stringify(projects));
+  }, [projects]);
 
   const handleOpen = (project: GrantProject) => {
-    onSelect(project);       // store selected project in App state
-    onNavigate("workspace"); // navigate to workspace view
+    onSelect(project);
+    onNavigate("workspace");
   };
 
   const handleDelete = (id: string) => {
