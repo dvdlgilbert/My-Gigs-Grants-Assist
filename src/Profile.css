@@ -5,7 +5,7 @@
   background-color: #f3f4f6;
   border-radius: 8px;
   box-shadow: 0 2px 6px rgba(0,0,0,0.1);
-  text-align: left; /* left justify labels */
+  text-align: left;
 }
 
 .profile-container h2 {
@@ -30,7 +30,7 @@ fieldset {
 legend {
   font-weight: bold;
   color: #374151;
-  padding: 0 8px;
+  padding: 0 8px; /* fixed */
 }
 
 label {
