@@ -46,9 +46,7 @@ function parseGeminiResponse(data: any): GrantRecommendation[] {
  * findGrants
  * Given a nonprofit profile, returns a list of grant recommendations.
  */
-export async function findGrants(
-  profile: NonprofitProfile
-): Promise<GrantRecommendation[]> {
+export async function findGrants(profile: NonprofitProfile): Promise<GrantRecommendation[]> {
   const apiKey = localStorage.getItem("gemini_api_key");
   if (!apiKey) {
     throw new Error("No Gemini API key found. Please enter your API key.");
@@ -69,8 +67,7 @@ export async function findGrants(
       {
         funderName: "National Arts Endowment",
         grantName: "Arts Innovation Grant",
-        description:
-          "Funds creative projects that expand access to arts and culture.",
+        description: "Funds creative projects that expand access to arts and culture.",
         website: "https://example.org/arts-innovation",
         matchReason: "Aligns with your stated goals around cultural engagement.",
       },
@@ -124,4 +121,54 @@ export async function findGrants(
 
   const data = await response.json();
   return parseGeminiResponse(data);
+}
+
+/**
+ * refineProposal
+ * Given a draft proposal string, returns AI-refined text.
+ */
+export async function refineProposal(draft: string): Promise<string> {
+  const apiKey = localStorage.getItem("gemini_api_key");
+  if (!apiKey) {
+    throw new Error("No Gemini API key found. Please enter your API key.");
+  }
+
+  const USE_MOCK = getUseMock();
+
+  if (USE_MOCK) {
+    // Simple mock refinement
+    await new Promise((resolve) => setTimeout(resolve, 1000));
+    return `Refined Draft (mock):\n\n${draft}\n\n[AI suggestions would appear here]`;
+  }
+
+  const response = await fetch(
+    "https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent",
+    {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${apiKey}`,
+      },
+      body: JSON.stringify({
+        contents: [
+          {
+            parts: [
+              {
+                text: `Please refine and improve the following nonprofit grant proposal draft:\n\n${draft}`,
+              },
+            ],
+          },
+        ],
+      }),
+    }
+  );
+
+  if (!response.ok) {
+    throw new Error(`Gemini API error: ${response.statusText}`);
+  }
+
+  const data = await response.json();
+  const refinedText: string =
+    data?.candidates?.[0]?.content?.parts?.[0]?.text ?? "No refinement returned from Gemini.";
+  return refinedText;
 }
