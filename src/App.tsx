@@ -4,6 +4,7 @@ import Dashboard from "./Dashboard";
 import Profile from "./Profile";
 import "./App.css";
 import "./Home.css";
+import Tools from "./Tools";
 
 interface AppProps {
   initialView: string;
@@ -33,41 +34,39 @@ function App({ initialView }: AppProps) {
       </header>
 
       {/* Main content */}
-      <main>
-        {view === "home" && (
-          <>
-            <div className="home-container">
-              <h2>Welcome to My Gigs Grants Assist</h2>
-              <p>
-                This is the Home view. Add onboarding, quick-start steps, and
-                links to Finder and Dashboard.
-              </p>
-            </div>
+<main>
+  {view === "home" && (
+    <>
+      <div className="home-container">
+        <h2>Welcome to My Gigs Grants Assist</h2>
+        <p>
+          This is the Home view. Add onboarding, quick-start steps, and
+          links to Finder and Dashboard.
+        </p>
+      </div>
 
-            {/* Buttons outside the welcome pane */}
-            <div className="home-buttons">
-              <button onClick={() => setView("tools")}>Manage Grants</button>
-              <button onClick={() => setView("profile")}>Profile</button>
-            </div>
-          </>
-        )}
+      <div className="home-buttons">
+        <button onClick={() => setView("tools")}>Manage Grants</button>
+        <button onClick={() => setView("profile")}>Profile</button>
+      </div>
+    </>
+  )}
 
-        {view === "finder" && <Finder />}
-        {view === "dashboard" && <Dashboard />}
-        {view === "mockup" && (
-          <div className="home-container">
-            <h2>Mockup training mode</h2>
-            <p>Use Mockup for training. This mode is for demo flows and UI practice.</p>
-          </div>
-        )}
-        {view === "profile" && <Profile onBack={() => setView("dashboard")} />}
-        {view === "tools" && (
-          <div className="home-container">
-            <h2>Tools Management</h2>
-            <p>This will be the Manage Grants page (next phase).</p>
-          </div>
-        )}
-      </main>
+  {view === "finder" && <Finder />}
+  {view === "dashboard" && <Dashboard />}
+  {view === "mockup" && (
+    <div className="home-container">
+      <h2>Mockup training mode</h2>
+      <p>Use Mockup for training. This mode is for demo flows and UI practice.</p>
+    </div>
+  )}
+
+  {/* Tools Management hub */}
+  {view === "tools" && <Tools onNavigate={setView} />}
+
+  {/* Profile form */}
+  {view === "profile" && <Profile onBack={() => setView("dashboard")} />}
+</main>      
     </div>
   );
 }
