@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { findGrants } from "./services/geminiService";
 import type { NonprofitProfile, GrantRecommendation } from "./types";
-import ProfileForm from "./components/ProfileForm"; // ✅ use your existing form
+import ProfileForm from "./components/ProfileForm";
 
 const STORAGE_KEY = "nonprofit_profile";
 
@@ -24,7 +24,6 @@ const GrantFinder: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   const [showForm, setShowForm] = useState(true);
 
-  // 🔑 Load saved profile from localStorage on mount
   useEffect(() => {
     const saved = localStorage.getItem(STORAGE_KEY);
     if (saved) {
@@ -51,6 +50,24 @@ const GrantFinder: React.FC = () => {
     } finally {
       setLoading(false);
     }
+  };
+
+  const handleClearProfile = () => {
+    localStorage.removeItem(STORAGE_KEY);
+    setProfile({
+      orgName: "",
+      taxId: "",
+      mission: "",
+      goals: "",
+      needs: "",
+      address: "",
+      contactName: "",
+      contactPhone: "",
+      email: "",
+      website: "",
+    });
+    setResults([]);
+    setShowForm(true);
   };
 
   return (
@@ -87,12 +104,20 @@ const GrantFinder: React.FC = () => {
               <p className="text-xs text-slate-500 mt-1">{grant.matchReason}</p>
             </div>
           ))}
-          <button
-            onClick={() => setShowForm(true)}
-            className="mt-4 bg-slate-200 px-4 py-2 rounded-md hover:bg-slate-300"
-          >
-            Edit Profile
-          </button>
+          <div className="flex space-x-2 mt-4">
+            <button
+              onClick={() => setShowForm(true)}
+              className="bg-slate-200 px-4 py-2 rounded-md hover:bg-slate-300"
+            >
+              Edit Profile
+            </button>
+            <button
+              onClick={handleClearProfile}
+              className="bg-red-500 text-white px-4 py-2 rounded-md hover:bg-red-600"
+            >
+              Clear Profile
+            </button>
+          </div>
         </div>
       )}
     </div>
