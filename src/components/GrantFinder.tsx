@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { findGrants } from "../services/geminiService";
 import type { NonprofitProfile, GrantRecommendation } from "../types";
+import ApiKeyInput from "../components/ApiKeyInput";
 
 interface GrantFinderProps {
   profile: NonprofitProfile;
@@ -22,14 +23,31 @@ const GrantFinder: React.FC<GrantFinderProps> = ({
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
+  const [apiKey, setApiKey] = useState<string | null>(
+    localStorage.getItem("gemini_api_key")
+  );
+  const [showApiKeyInput, setShowApiKeyInput] = useState(false);
+
   const performSearch = async () => {
     setLoading(true);
     setError(null);
 
     try {
+      // Save mode preference
       localStorage.setItem("use_mock", JSON.stringify(useMock));
+
+      // Check for API key if not in mock mode
+      if (!useMock && !apiKey) {
+        setShowApiKeyInput(true);
+        setLoading(false);
+        return;
+      }
+
       const results = await findGrants(profile);
-      const limited = results.slice(0, Math.max(5, Math.min(7, results.length || 6)));
+      const limited = results.slice(
+        0,
+        Math.max(5, Math.min(7, results.length || 6))
+      );
       setGrants(limited);
     } catch (err: any) {
       setError(err.message || "Failed to fetch grant recommendations.");
@@ -77,7 +95,8 @@ const GrantFinder: React.FC<GrantFinderProps> = ({
       {grants.length === 0 ? (
         <div className="border rounded-lg shadow-sm p-6 bg-white">
           <p className="text-slate-700">
-            No grant recommendations yet. Click “Initiate Grant Search” to fetch suggestions.
+            No grant recommendations yet. Click “Initiate Grant Search” to fetch
+            suggestions.
           </p>
         </div>
       ) : (
@@ -97,7 +116,9 @@ const GrantFinder: React.FC<GrantFinderProps> = ({
               </div>
               <div className="flex justify-between items-center mt-4">
                 <button
-                  onClick={() => onCreateProject(grant.grantName, grant.funderName)}
+                  onClick={() =>
+                    onCreateProject(grant.grantName, grant.funderName)
+                  }
                   className="bg-green-500 text-white px-3 py-1 rounded-md hover:bg-green-600"
                 >
                   Create Project
@@ -115,6 +136,17 @@ const GrantFinder: React.FC<GrantFinderProps> = ({
           ))}
         </div>
       )}
+
+      {showApiKeyInput && (
+  <ApiKeyInput
+    onSave={(key: string) => {
+      localStorage.setItem("gemini_api_key", key);
+      setApiKey(key);
+      setShowApiKeyInput(false);
+    }}
+    onCancel={() => setShowApiKeyInput(false)}
+  />
+)}
     </div>
   );
 };
