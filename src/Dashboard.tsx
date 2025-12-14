@@ -1,49 +1,55 @@
 import React, { useState, useEffect } from "react";
-import type { GrantProject } from "./types";
-
-const STORAGE_KEY = "projects";
+import { fetchGrants, GrantResult } from "./utils/api";
 
 const Dashboard: React.FC = () => {
-  const [projects, setProjects] = useState<GrantProject[]>([]);
+  const [grants, setGrants] = useState<GrantResult[]>([]);
+  const [loading, setLoading] = useState<boolean>(false);
+  const [error, setError] = useState<string | null>(null);
 
-  // Load projects from localStorage on mount
   useEffect(() => {
-    const saved = localStorage.getItem(STORAGE_KEY);
-    if (saved) {
+    const loadData = async () => {
+      setLoading(true);
+      setError(null);
+
       try {
-        setProjects(JSON.parse(saved));
-      } catch {
-        console.warn("Invalid projects JSON in localStorage");
+        const data = await fetchGrants();
+        setGrants(data);
+      } catch (err: any) {
+        setError(err.message || "Failed to load grants");
       }
-    }
-  }, []);
+
+      setLoading(false);
+    };
+
+    loadData();
+  }, []); // ✅ runs once when Dashboard mounts
 
   return (
-    <div className="p-6">
-      <h2 className="text-2xl font-bold mb-4">Dashboard</h2>
+    <div>
+      <h2>Dashboard</h2>
 
-      {projects.length === 0 ? (
-        <p className="text-slate-600">
-          No projects yet. Create one from the Manage Projects page.
-        </p>
-      ) : (
-        <div className="space-y-3">
-          {projects.map((project) => (
-            <div
-              key={project.id}
-              className="border rounded-md p-3 hover:bg-slate-100 cursor-pointer"
-            >
-              <h4 className="font-bold">{project.grantTitle}</h4>
-              <p className="text-sm text-slate-700">
-                Status: {project.status}
-              </p>
-              <p className="text-sm">{project.proposal}</p>
-              <p className="text-xs text-slate-500">
-                Last Edited: {new Date(project.lastEdited).toLocaleString()}
-              </p>
-            </div>
+      {loading && <p>Loading grants...</p>}
+      {error && <p style={{ color: "red" }}>{error}</p>}
+
+      <table>
+        <thead>
+          <tr>
+            <th>Grant Name</th>
+            <th>Amount</th>
+          </tr>
+        </thead>
+        <tbody>
+          {grants.map((grant) => (
+            <tr key={grant.id}>
+              <td>{grant.name}</td>
+              <td>${grant.amount}</td>
+            </tr>
           ))}
-        </div>
+        </tbody>
+      </table>
+
+      {!loading && grants.length === 0 && !error && (
+        <p>No grants available. Try switching API mode or saving a key.</p>
       )}
     </div>
   );
