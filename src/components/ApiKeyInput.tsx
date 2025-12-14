@@ -1,72 +1,47 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 
 interface ApiKeyInputProps {
-  onSave: () => void; // callback to notify parent when key is saved/cleared
+  onSave: (key: string) => void;
+  onCancel?: () => void;
 }
 
-const ApiKeyInput: React.FC<ApiKeyInputProps> = ({ onSave }) => {
+const ApiKeyInput: React.FC<ApiKeyInputProps> = ({ onSave, onCancel }) => {
   const [apiKey, setApiKey] = useState("");
-  const [saved, setSaved] = useState(false);
-
-  // Load any existing key from localStorage on mount
-  useEffect(() => {
-    const existingKey = localStorage.getItem("gemini_api_key");
-    if (existingKey) {
-      setApiKey(existingKey);
-      setSaved(true);
-    }
-  }, []);
 
   const handleSave = () => {
-    if (apiKey.trim().length === 0) {
-      alert("API key cannot be empty.");
-      return;
-    }
-    localStorage.setItem("gemini_api_key", apiKey.trim());
-    setSaved(true);
-    onSave();
-  };
-
-  const handleClear = () => {
-    localStorage.removeItem("gemini_api_key");
-    setApiKey("");
-    setSaved(false);
-    onSave();
+    if (!apiKey.trim()) return;
+    localStorage.setItem("gemini_api_key", apiKey);
+    onSave(apiKey);
   };
 
   return (
-    <div className="space-y-2">
-      <label className="block text-sm font-semibold">Gemini API Key</label>
-      <input
-        type="text"
-        value={apiKey}
-        onChange={(e) => setApiKey(e.target.value)}
-        placeholder="Enter your Gemini API key"
-        className="w-full border rounded-md p-2 text-sm"
-      />
-
-      <div className="flex space-x-2">
-        <button
-          type="button"
-          onClick={handleSave}
-          className="bg-brand-primary text-white px-3 py-1 rounded-md text-sm hover:bg-brand-secondary"
-        >
-          Save Key
-        </button>
-        {saved && (
+    <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-40">
+      <div className="bg-white rounded-md shadow-md p-6 w-96">
+        <h3 className="text-lg font-bold mb-4">Enter Gemini API Key</h3>
+        <input
+          type="text"
+          placeholder="Paste your API key here"
+          value={apiKey}
+          onChange={(e) => setApiKey(e.target.value)}
+          className="w-full border rounded-md p-2 mb-4"
+        />
+        <div className="flex space-x-2">
           <button
-            type="button"
-            onClick={handleClear}
-            className="bg-red-500 text-white px-3 py-1 rounded-md text-sm hover:bg-red-600"
+            onClick={handleSave}
+            className="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600"
           >
-            Clear Key
+            Save Key
           </button>
-        )}
+          {onCancel && (
+            <button
+              onClick={onCancel}
+              className="bg-slate-300 px-4 py-2 rounded-md hover:bg-slate-400"
+            >
+              Cancel
+            </button>
+          )}
+        </div>
       </div>
-
-      {saved && (
-        <p className="text-green-600 text-sm">✅ API key saved successfully.</p>
-      )}
     </div>
   );
 };
