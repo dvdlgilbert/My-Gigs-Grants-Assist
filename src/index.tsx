@@ -1,10 +1,14 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
 import App from "./App";
-import "./index.css";
-import "./App.css";   // ensure global styles are loaded
+import "./index.css"; // important for Tailwind/CSS
 
-// Determine initial view based on URL path
-const path = window.location.pathname.replace("/", "") || "home";
+const root = ReactDOM.createRoot(
+  document.getElementById("root") as HTMLElement
+);
 
-const root = ReactDOM.createRoot(document.getElementById("root") as HTMLElement);
+root.render(
+  <React.StrictMode>
+    <App initialView="dashboard" />
+  </React.StrictMode>
+);

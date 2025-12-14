@@ -4,11 +4,16 @@ import Dashboard from "./Dashboard";
 import ManageGrants from "./ManageGrants";
 import ApiKeyInput from "./components/ApiKeyInput";
 
-function App() {
+interface AppProps {
+  initialView?: string;
+}
+
+const App: React.FC<AppProps> = ({ initialView }) => {
+  // Default to the provided initialView, or fallback to "finder"
+  const [view, setView] = useState(initialView || "finder");
   const [showApiKeyInput, setShowApiKeyInput] = useState(false);
 
   const handleSaveApiKey = (key: string) => {
-    // Already stored in localStorage by ApiKeyInput, but you can add extra logic here
     console.log("API key saved:", key);
     setShowApiKeyInput(false);
   };
@@ -21,20 +26,21 @@ function App() {
     <div className="App">
       <h1>My Gigs Grants Assist</h1>
 
-      {/* Navigation or sections */}
-      <Finder />
-      <Dashboard />
-      <ManageGrants />
+      {/* Simple navigation buttons to switch views */}
+      <div style={{ marginBottom: "1rem" }}>
+        <button onClick={() => setView("finder")}>Finder</button>
+        <button onClick={() => setView("dashboard")}>Dashboard</button>
+        <button onClick={() => setView("manage")}>Manage Grants</button>
+      </div>
+
+      {/* Render based on current view */}
+      {view === "finder" && <Finder />}
+      {view === "dashboard" && <Dashboard />}
+      {view === "manage" && <ManageGrants />}
 
       <section style={{ marginTop: "2rem" }}>
         <h3>API Key Management</h3>
-        <button
-          onClick={() => setShowApiKeyInput(true)}
-          className="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600"
-        >
-          Enter API Key
-        </button>
-
+        <button onClick={() => setShowApiKeyInput(true)}>Enter API Key</button>
         <p style={{ marginTop: "1rem" }}>
           Don’t have a key?{" "}
           <a
@@ -52,6 +58,6 @@ function App() {
       )}
     </div>
   );
-}
+};
 
 export default App;
