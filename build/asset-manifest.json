@@ -1,0 +1,13 @@
+{
+  "files": {
+    "main.css": "/My-Gigs-Grants-Assist/static/css/main.b1bb456c.css",
+    "main.js": "/My-Gigs-Grants-Assist/static/js/main.1ee5f237.js",
+    "index.html": "/My-Gigs-Grants-Assist/index.html",
+    "main.b1bb456c.css.map": "/My-Gigs-Grants-Assist/static/css/main.b1bb456c.css.map",
+    "main.1ee5f237.js.map": "/My-Gigs-Grants-Assist/static/js/main.1ee5f237.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.b1bb456c.css",
+    "static/js/main.1ee5f237.js"
+  ]
+}

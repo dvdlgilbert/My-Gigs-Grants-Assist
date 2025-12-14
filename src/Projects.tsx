@@ -8,7 +8,11 @@ interface ProjectsProps {
 }
 
 const Projects: React.FC<ProjectsProps> = ({ onNavigate, onSelect }) => {
-  const [projects, setProjects] = useState<GrantProject[]>([]);
+const STORAGE_KEY = "projects";
+const [projects, setProjects] = useState<GrantProject[]>(() => {
+  const saved = localStorage.getItem(STORAGE_KEY);
+  return saved ? JSON.parse(saved) : [];
+});
   const [showNewProjectForm, setShowNewProjectForm] = useState(false);
   const [newProjectTitle, setNewProjectTitle] = useState("");
   const [newProjectDescription, setNewProjectDescription] = useState("");
@@ -25,15 +29,21 @@ const Projects: React.FC<ProjectsProps> = ({ onNavigate, onSelect }) => {
       lastEdited: new Date().toISOString(),
 };
 
-    setProjects([...projects, newProject]);
-    setNewProjectTitle("");
-    setNewProjectDescription("");
-    setShowNewProjectForm(false);
+const updatedProjects = [...projects, newProject];
+  setProjects(updatedProjects);
 
-    // Select the newly created project and navigate to workspace
-    onSelect(newProject);
-    onNavigate("workspace");
-  };
+  // ✅ Persist to localStorage
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(updatedProjects));
+
+  setNewProjectTitle("");
+  setNewProjectDescription("");
+  setShowNewProjectForm(false);
+
+  // Select the newly created project and navigate to workspace
+  onSelect(newProject);
+  onNavigate("workspace");
+};
+
 
   return (
     <div className="p-6">

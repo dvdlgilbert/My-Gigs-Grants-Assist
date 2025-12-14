@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import ProfileForm from "./components/ProfileForm";
 import "./Profile.css";
 
 export default function Profile({ onBack }: { onBack?: () => void }) {
