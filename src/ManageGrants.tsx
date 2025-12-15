@@ -13,6 +13,7 @@ const ManageGrants: React.FC = () => {
   const [grants, setGrants] = useState<Grant[]>([]);
   const [editingGrant, setEditingGrant] = useState<Grant | null>(null);
 
+  // Load grants from localStorage on mount
   useEffect(() => {
     const raw = localStorage.getItem("grants");
     if (raw) {
@@ -47,13 +48,6 @@ const ManageGrants: React.FC = () => {
     persistGrants(updatedList);
   };
 
-  const runWritingAssist = (grant: Grant) => {
-    // Placeholder: Replace with AI text generation call
-    alert(
-      `AI drafting text for ${grant.name}...\n\nCurrent description:\n${grant.description}`
-    );
-  };
-
   return (
     <div className="space-y-4">
       <h2 className="text-2xl font-semibold">Manage Grants</h2>
@@ -67,15 +61,7 @@ const ManageGrants: React.FC = () => {
       <div className="grid md:grid-cols-2 gap-4 mt-4">
         {grants.map((grant) => (
           <div key={grant.id} className="border rounded p-4 shadow">
-            <div className="flex justify-between items-center">
-              <h3 className="text-xl font-bold">{grant.name}</h3>
-              <button
-                className="px-2 py-1 bg-brand-accent text-white rounded hover:bg-brand-dark text-sm"
-                onClick={() => runWritingAssist(grant)}
-              >
-                AI Write Assist
-              </button>
-            </div>
+            <h3 className="text-xl font-bold">{grant.name}</h3>
             <p className="text-gray-600">{grant.amount}</p>
             <p className="mt-2">{grant.description}</p>
             <p className="mt-2 text-sm text-gray-500">Status: {grant.status}</p>
@@ -148,12 +134,6 @@ const ManageGrants: React.FC = () => {
               onClick={() => setEditingGrant(null)}
             >
               Cancel
-            </button>
-            <button
-              className="px-4 py-2 bg-brand-accent text-white rounded hover:bg-brand-dark"
-              onClick={() => runWritingAssist(editingGrant)}
-            >
-              AI Write Assist
             </button>
           </div>
         </div>
