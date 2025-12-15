@@ -12,11 +12,17 @@ interface Grant {
 const Dashboard: React.FC = () => {
   const [grants, setGrants] = useState<Grant[]>([]);
 
-  useEffect(() => {
+  const loadGrants = () => {
     const raw = localStorage.getItem("grants");
     if (raw) {
       setGrants(JSON.parse(raw));
+    } else {
+      setGrants([]);
     }
+  };
+
+  useEffect(() => {
+    loadGrants();
   }, []);
 
   return (
@@ -25,6 +31,13 @@ const Dashboard: React.FC = () => {
       <p className="text-gray-700">
         Overview of your saved and managed grants.
       </p>
+
+      <button
+        className="px-4 py-2 bg-brand-primary text-white rounded hover:bg-brand-dark"
+        onClick={loadGrants}
+      >
+        Refresh Grants
+      </button>
 
       {grants.length === 0 ? (
         <p className="text-gray-500">No grants created yet.</p>
