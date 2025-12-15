@@ -5,7 +5,8 @@ interface HomeProps {
   profilePresent: boolean;
   onCreateProfile: () => void;
   onGoDashboard: () => void;
-  onShowApiKey: () => void; // <-- add this
+  onShowApiKey: () => void;
+  onGoProfile: () => void; // <-- new prop
 }
 
 const Home: React.FC<HomeProps> = ({
@@ -13,6 +14,7 @@ const Home: React.FC<HomeProps> = ({
   onCreateProfile,
   onGoDashboard,
   onShowApiKey,
+  onGoProfile,
 }) => {
   return (
     <div className="space-y-4">
@@ -32,6 +34,12 @@ const Home: React.FC<HomeProps> = ({
           onClick={onGoDashboard}
         >
           Go to Dashboard
+        </button>
+        <button
+          className="px-4 py-2 bg-white border rounded hover:bg-gray-50"
+          onClick={onGoProfile}
+        >
+          Profile
         </button>
       </div>
 
