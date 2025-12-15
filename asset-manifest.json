@@ -1,13 +1,13 @@
 {
   "files": {
-    "main.css": "/My-Gigs-Grants-Assist/static/css/main.903703e2.css",
-    "main.js": "/My-Gigs-Grants-Assist/static/js/main.328b704a.js",
+    "main.css": "/My-Gigs-Grants-Assist/static/css/main.6fcb9427.css",
+    "main.js": "/My-Gigs-Grants-Assist/static/js/main.751ab61f.js",
     "index.html": "/My-Gigs-Grants-Assist/index.html",
-    "main.903703e2.css.map": "/My-Gigs-Grants-Assist/static/css/main.903703e2.css.map",
-    "main.328b704a.js.map": "/My-Gigs-Grants-Assist/static/js/main.328b704a.js.map"
+    "main.6fcb9427.css.map": "/My-Gigs-Grants-Assist/static/css/main.6fcb9427.css.map",
+    "main.751ab61f.js.map": "/My-Gigs-Grants-Assist/static/js/main.751ab61f.js.map"
   },
   "entrypoints": [
-    "static/css/main.903703e2.css",
-    "static/js/main.328b704a.js"
+    "static/css/main.6fcb9427.css",
+    "static/js/main.751ab61f.js"
   ]
 }
