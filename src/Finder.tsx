@@ -1,5 +1,5 @@
 // src/Finder.tsx
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 
 interface GrantResult {
   id: string;
@@ -14,11 +14,10 @@ const Finder: React.FC = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  // Load org profile from localStorage
   const profileRaw = localStorage.getItem("orgProfile");
   const profile = profileRaw ? JSON.parse(profileRaw) : null;
 
-  const runSearch = async () => {
+  const runSearch = async (append = false) => {
     if (!profile) {
       setError("Please create your organization profile first.");
       return;
@@ -27,32 +26,31 @@ const Finder: React.FC = () => {
     setError(null);
 
     try {
-      // Placeholder: Replace with real AI/Grant API call
-      // For now, simulate results based on profile mission/goals
+      // TODO: Replace with real AI/web search call
       const mockResults: GrantResult[] = [
         {
           id: "1",
           name: "Community Development Grant",
           amount: "$15,000",
           description: `Supports nonprofits aligned with mission: ${profile.mission}`,
-          url: "https://example.com/apply/community-grant",
+          url: "https://grantstation.com/funding-opportunities/community-development",
         },
         {
           id: "2",
           name: "Education Innovation Fund",
           amount: "$25,000",
           description: `For organizations focused on goals: ${profile.goals}`,
-          url: "https://example.com/apply/education-fund",
+          url: "https://grantstation.com/funding-opportunities/education-innovation",
         },
         {
           id: "3",
           name: "Health Equity Grant",
           amount: "$10,000",
           description: `Addresses needs: ${profile.needs}`,
-          url: "https://example.com/apply/health-equity",
+          url: "https://grantstation.com/funding-opportunities/health-equity",
         },
       ];
-      setResults(mockResults);
+      setResults(append ? [...results, ...mockResults] : mockResults);
     } catch (err) {
       setError("Search failed. Please try again.");
     } finally {
@@ -61,8 +59,10 @@ const Finder: React.FC = () => {
   };
 
   const runWritingAssist = (grant: GrantResult) => {
-    // Placeholder: Replace with AI writing assistance call
-    alert(`Drafting application text for ${grant.name} using your profile...`);
+    // TODO: Replace with AI text generation call
+    alert(
+      `Drafting application text for ${grant.name} using your profile:\n\nMission: ${profile.mission}\nGoals: ${profile.goals}\nNeeds: ${profile.needs}`
+    );
   };
 
   return (
@@ -72,13 +72,22 @@ const Finder: React.FC = () => {
         Search for grants tailored to your organization profile.
       </p>
 
-      <button
-        className="px-4 py-2 bg-brand-primary text-white rounded hover:bg-brand-dark"
-        onClick={runSearch}
-        disabled={loading}
-      >
-        {loading ? "Searching..." : "Run AI Search"}
-      </button>
+      <div className="flex gap-3">
+        <button
+          className="px-4 py-2 bg-brand-primary text-white rounded hover:bg-brand-dark"
+          onClick={() => runSearch(false)}
+          disabled={loading}
+        >
+          {loading ? "Searching..." : "Run AI Search"}
+        </button>
+        <button
+          className="px-4 py-2 bg-brand-accent text-white rounded hover:bg-brand-dark"
+          onClick={() => runSearch(true)}
+          disabled={loading}
+        >
+          {loading ? "Searching..." : "Search for More Grants"}
+        </button>
+      </div>
 
       {error && <div className="text-red-600">{error}</div>}
 
