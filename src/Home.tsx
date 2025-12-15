@@ -5,9 +5,15 @@ interface HomeProps {
   profilePresent: boolean;
   onCreateProfile: () => void;
   onGoDashboard: () => void;
+  onShowApiKey: () => void; // <-- add this
 }
 
-const Home: React.FC<HomeProps> = ({ profilePresent, onCreateProfile, onGoDashboard, onShowApiKey }) => {
+const Home: React.FC<HomeProps> = ({
+  profilePresent,
+  onCreateProfile,
+  onGoDashboard,
+  onShowApiKey,
+}) => {
   return (
     <div className="space-y-4">
       <h2 className="text-2xl font-semibold">Welcome to My Gigs - Grants Assist</h2>
