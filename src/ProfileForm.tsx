@@ -35,14 +35,14 @@ const ProfileForm: React.FC<ProfileFormProps> = ({ initial, onSave, onCancel }) 
   });
 
   const [dirty, setDirty] = useState(false);
-  const [saved, setSaved] = useState(false); // <-- new state for success banner
+  const [saved, setSaved] = useState(false);
 
   const update = (field: keyof OrgProfile) => (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
     setForm({ ...form, [field]: e.target.value });
     setDirty(true);
-    setSaved(false); // reset banner if editing again
+    setSaved(false); // hide banner when editing again
   };
 
   const save = () => {
@@ -65,14 +65,21 @@ const ProfileForm: React.FC<ProfileFormProps> = ({ initial, onSave, onCancel }) 
     <div className="space-y-6">
       <h2 className="text-2xl font-semibold">Organization Profile</h2>
 
-      {/* Success banner */}
+      {/* Success banner with dismiss button */}
       {saved && (
-        <div className="p-3 bg-green-100 border border-green-400 text-green-700 rounded">
-          ✅ Profile saved successfully!
+        <div className="flex items-center justify-between p-3 bg-green-100 border border-green-400 text-green-700 rounded">
+          <span>✅ Profile saved successfully!</span>
+          <button
+            className="text-green-700 font-bold ml-4"
+            onClick={() => setSaved(false)}
+          >
+            ✕
+          </button>
         </div>
       )}
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        {/* Form fields */}
         <div>
           <label className="block text-sm text-gray-600">Organization Name</label>
           <input className="mt-1 w-full border rounded p-2" value={form.orgName} onChange={update("orgName")} />
