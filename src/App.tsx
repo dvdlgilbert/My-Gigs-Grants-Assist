@@ -13,6 +13,7 @@ const App: React.FC = () => {
   const [view, setView] = useState<View>("home");
   const [showApiKeyInput, setShowApiKeyInput] = useState(false);
   const [profile, setProfile] = useState<OrgProfile | null>(null);
+  const [profileJustSaved, setProfileJustSaved] = useState(false); // track save state
 
   useEffect(() => {
     const raw = localStorage.getItem("orgProfile");
@@ -22,7 +23,13 @@ const App: React.FC = () => {
   const handleSaveProfile = (data: OrgProfile) => {
     setProfile(data);
     localStorage.setItem("orgProfile", JSON.stringify(data));
-    setView("dashboard");
+    setProfileJustSaved(true); // mark as saved
+    // ⚠️ Do NOT navigate away yet — stay on ProfileForm
+  };
+
+  const handleDismissBanner = () => {
+    setProfileJustSaved(false);
+    setView("dashboard"); // navigate only when dismissing
   };
 
   return (
@@ -55,6 +62,8 @@ const App: React.FC = () => {
             initial={profile || undefined}
             onSave={handleSaveProfile}
             onCancel={() => setView("dashboard")}
+            saved={profileJustSaved}
+            onDismissBanner={handleDismissBanner}
           />
         )}
         {view === "finder" && <Finder />}
