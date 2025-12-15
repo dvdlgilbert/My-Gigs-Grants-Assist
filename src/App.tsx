@@ -41,54 +41,33 @@ const App: React.FC = () => {
       </header>
 
       <main className="bg-white shadow rounded p-4">
-  {view === "home" && (
-    <Home
-      profilePresent={!!profile}
-      onCreateProfile={() => setView("profile")}
-      onGoDashboard={() => setView("dashboard")}
-      onShowApiKey={() => setShowApiKeyInput(true)}
-    />
-  )}
-  {view === "dashboard" && <Dashboard />}
-  {view === "profile" && (
-    <ProfileForm
-      initial={profile || undefined}
-      onSave={handleSaveProfile}
-      onCancel={() => setView("dashboard")}
-    />
-  )}
-  {view === "finder" && <Finder />}
-  {view === "manage" && <ManageGrants />}
-</main>
+        {view === "home" && (
+          <Home
+            profilePresent={!!profile}
+            onCreateProfile={() => setView("profile")}
+            onGoDashboard={() => setView("dashboard")}
+            onShowApiKey={() => setShowApiKeyInput(true)}
+          />
+        )}
+        {view === "dashboard" && <Dashboard />}
+        {view === "profile" && (
+          <ProfileForm
+            initial={profile || undefined}
+            onSave={handleSaveProfile}
+            onCancel={() => setView("dashboard")}
+          />
+        )}
+        {view === "finder" && <Finder />}
+        {view === "manage" && <ManageGrants />}
+      </main>
 
-      <section className="mt-8">
-        <h3 className="text-xl font-semibold mb-2">API Key Management</h3>
-        <button
-          className="px-4 py-2 bg-brand-accent text-white rounded hover:bg-brand-dark"
-          onClick={() => setShowApiKeyInput(true)}
-        >
-          Enter API Key
-        </button>
-        <p className="mt-4">
-          Don’t have a key?{" "}
-          <a
-            href="https://aistudio.google.com/app/apikey"
-            target="_blank"
-            rel="noreferrer"
-            className="text-brand-primary underline hover:text-brand-dark"
-          >
-            Get one here
-          </a>
-        </p>
-      </section>
-
-     {showApiKeyInput && (
-  <ApiKeyInput
-    onSave={() => setShowApiKeyInput(false)}
-    onCancel={() => setShowApiKeyInput(false)}
-  />
-)}
-</div>
+      {showApiKeyInput && (
+        <ApiKeyInput
+          onSave={() => setShowApiKeyInput(false)}
+          onCancel={() => setShowApiKeyInput(false)}
+        />
+      )}
+    </div>
   );
 };
 
