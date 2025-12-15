@@ -14,6 +14,7 @@ const Finder: React.FC = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
+  // Load org profile from localStorage
   const profileRaw = localStorage.getItem("orgProfile");
   const profile = profileRaw ? JSON.parse(profileRaw) : null;
 
@@ -26,24 +27,24 @@ const Finder: React.FC = () => {
     setError(null);
 
     try {
-      // TODO: Replace with real AI/web search call
+      // Placeholder: Replace with real AI/web search call
       const mockResults: GrantResult[] = [
         {
-          id: "1",
+          id: Date.now().toString() + "-1",
           name: "Community Development Grant",
           amount: "$15,000",
           description: `Supports nonprofits aligned with mission: ${profile.mission}`,
           url: "https://grantstation.com/funding-opportunities/community-development",
         },
         {
-          id: "2",
+          id: Date.now().toString() + "-2",
           name: "Education Innovation Fund",
           amount: "$25,000",
           description: `For organizations focused on goals: ${profile.goals}`,
           url: "https://grantstation.com/funding-opportunities/education-innovation",
         },
         {
-          id: "3",
+          id: Date.now().toString() + "-3",
           name: "Health Equity Grant",
           amount: "$10,000",
           description: `Addresses needs: ${profile.needs}`,
@@ -59,7 +60,7 @@ const Finder: React.FC = () => {
   };
 
   const runWritingAssist = (grant: GrantResult) => {
-    // TODO: Replace with AI text generation call
+    // Placeholder: Replace with AI text generation call
     alert(
       `Drafting application text for ${grant.name} using your profile:\n\nMission: ${profile.mission}\nGoals: ${profile.goals}\nNeeds: ${profile.needs}`
     );
