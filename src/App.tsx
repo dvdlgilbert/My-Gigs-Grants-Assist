@@ -45,10 +45,9 @@ const App: React.FC = () => {
         {view === "home" && (
           <Home
             profilePresent={!!profile}
-            onCreateProfile={() => setView("profile")}
             onGoDashboard={() => setView("dashboard")}
             onShowApiKey={() => setShowApiKeyInput(true)}
-            onGoProfile={() => setView("profile")}            
+            onGoProfile={() => setView("profile")}
           />
         )}
         {view === "dashboard" && <Dashboard />}

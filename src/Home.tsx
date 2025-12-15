@@ -3,18 +3,16 @@ import React from "react";
 
 interface HomeProps {
   profilePresent: boolean;
-  onCreateProfile: () => void;
+  onGoProfile: () => void;
   onGoDashboard: () => void;
   onShowApiKey: () => void;
-  onGoProfile: () => void; // <-- new prop
 }
 
 const Home: React.FC<HomeProps> = ({
   profilePresent,
-  onCreateProfile,
+  onGoProfile,
   onGoDashboard,
   onShowApiKey,
-  onGoProfile,
 }) => {
   return (
     <div className="space-y-4">
@@ -25,7 +23,7 @@ const Home: React.FC<HomeProps> = ({
       <div className="flex gap-3">
         <button
           className="px-4 py-2 bg-brand-primary text-white rounded hover:bg-brand-dark"
-          onClick={onCreateProfile}
+          onClick={onGoProfile}
         >
           {profilePresent ? "Edit Profile" : "Create Profile"}
         </button>
