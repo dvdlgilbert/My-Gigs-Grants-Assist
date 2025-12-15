@@ -34,10 +34,29 @@ const ProfileForm: React.FC<ProfileFormProps> = ({ initial, onSave, onCancel }) 
     taxId: initial?.taxId || "",
   });
 
-  const update = (field: keyof OrgProfile) => (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) =>
-    setForm({ ...form, [field]: e.target.value });
+  const [dirty, setDirty] = useState(false);
 
-  const save = () => onSave(form);
+  const update = (field: keyof OrgProfile) => (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
+    setForm({ ...form, [field]: e.target.value });
+    setDirty(true);
+  };
+
+  const save = () => {
+    onSave(form);
+    setDirty(false);
+  };
+
+  const cancel = () => {
+    if (dirty) {
+      const confirmLeave = window.confirm(
+        "You have unsaved changes. Do you want to discard them?"
+      );
+      if (!confirmLeave) return;
+    }
+    onCancel();
+  };
 
   return (
     <div className="space-y-6">
@@ -90,7 +109,7 @@ const ProfileForm: React.FC<ProfileFormProps> = ({ initial, onSave, onCancel }) 
         <button className="px-4 py-2 bg-brand-primary text-white rounded hover:bg-brand-dark" onClick={save}>
           Save Profile
         </button>
-        <button className="px-4 py-2 bg-white border rounded hover:bg-gray-50" onClick={onCancel}>
+        <button className="px-4 py-2 bg-white border rounded hover:bg-gray-50" onClick={cancel}>
           Back to Dashboard
         </button>
       </div>
