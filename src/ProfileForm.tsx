@@ -35,17 +35,20 @@ const ProfileForm: React.FC<ProfileFormProps> = ({ initial, onSave, onCancel }) 
   });
 
   const [dirty, setDirty] = useState(false);
+  const [saved, setSaved] = useState(false); // <-- new state for success banner
 
   const update = (field: keyof OrgProfile) => (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
     setForm({ ...form, [field]: e.target.value });
     setDirty(true);
+    setSaved(false); // reset banner if editing again
   };
 
   const save = () => {
     onSave(form);
     setDirty(false);
+    setSaved(true); // show success banner
   };
 
   const cancel = () => {
@@ -61,6 +64,13 @@ const ProfileForm: React.FC<ProfileFormProps> = ({ initial, onSave, onCancel }) 
   return (
     <div className="space-y-6">
       <h2 className="text-2xl font-semibold">Organization Profile</h2>
+
+      {/* Success banner */}
+      {saved && (
+        <div className="p-3 bg-green-100 border border-green-400 text-green-700 rounded">
+          ✅ Profile saved successfully!
+        </div>
+      )}
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div>
