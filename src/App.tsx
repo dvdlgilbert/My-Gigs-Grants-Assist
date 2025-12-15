@@ -41,24 +41,25 @@ const App: React.FC = () => {
       </header>
 
       <main className="bg-white shadow rounded p-4">
-        {view === "home" && (
-          <Home
-            profilePresent={!!profile}
-            onCreateProfile={() => setView("profile")}
-            onGoDashboard={() => setView("dashboard")}
-          />
-        )}
-        {view === "dashboard" && <Dashboard />}
-        {view === "profile" && (
-          <ProfileForm
-            initial={profile || undefined}
-            onSave={handleSaveProfile}
-            onCancel={() => setView("dashboard")}
-          />
-        )}
-        {view === "finder" && <Finder />}
-        {view === "manage" && <ManageGrants />}
-      </main>
+  {view === "home" && (
+    <Home
+      profilePresent={!!profile}
+      onCreateProfile={() => setView("profile")}
+      onGoDashboard={() => setView("dashboard")}
+      onShowApiKey={() => setShowApiKeyInput(true)}
+    />
+  )}
+  {view === "dashboard" && <Dashboard />}
+  {view === "profile" && (
+    <ProfileForm
+      initial={profile || undefined}
+      onSave={handleSaveProfile}
+      onCancel={() => setView("dashboard")}
+    />
+  )}
+  {view === "finder" && <Finder />}
+  {view === "manage" && <ManageGrants />}
+</main>
 
       <section className="mt-8">
         <h3 className="text-xl font-semibold mb-2">API Key Management</h3>
@@ -81,13 +82,13 @@ const App: React.FC = () => {
         </p>
       </section>
 
-      {showApiKeyInput && (
-        <ApiKeyInput
-          onSave={() => setShowApiKeyInput(false)}
-          onCancel={() => setShowApiKeyInput(false)}
-        />
-      )}
-    </div>
+     {showApiKeyInput && (
+  <ApiKeyInput
+    onSave={() => setShowApiKeyInput(false)}
+    onCancel={() => setShowApiKeyInput(false)}
+  />
+)}
+</div>
   );
 };
 

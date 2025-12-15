@@ -7,7 +7,7 @@ interface HomeProps {
   onGoDashboard: () => void;
 }
 
-const Home: React.FC<HomeProps> = ({ profilePresent, onCreateProfile, onGoDashboard }) => {
+const Home: React.FC<HomeProps> = ({ profilePresent, onCreateProfile, onGoDashboard, onShowApiKey }) => {
   return (
     <div className="space-y-4">
       <h2 className="text-2xl font-semibold">Welcome to My Gigs - Grants Assist</h2>
@@ -28,6 +28,28 @@ const Home: React.FC<HomeProps> = ({ profilePresent, onCreateProfile, onGoDashbo
           Go to Dashboard
         </button>
       </div>
+
+      {/* API Key Management only on Homepage */}
+      <section className="mt-8">
+        <h3 className="text-xl font-semibold mb-2">API Key Management</h3>
+        <button
+          className="px-4 py-2 bg-brand-accent text-white rounded hover:bg-brand-dark"
+          onClick={onShowApiKey}
+        >
+          Enter API Key
+        </button>
+        <p className="mt-4">
+          Don’t have a key?{" "}
+          <a
+            href="https://aistudio.google.com/app/apikey"
+            target="_blank"
+            rel="noreferrer"
+            className="text-brand-primary underline hover:text-brand-dark"
+          >
+            Get one here
+          </a>
+        </p>
+      </section>
     </div>
   );
 };
