@@ -1,209 +1,106 @@
-import React, { useState, useEffect } from "react";
-import { fetchGrants, GrantResult, getApiMode, syncMockGrants } from "./utils/api";
+// src/ManageGrants.tsx
+import React, { useState } from "react";
 
-const STORAGE_KEY = "mockGrants";
+interface Grant {
+  id: string;
+  name: string;
+  amount: string;
+  description: string;
+  status: "Draft" | "Submitted" | "Approved";
+}
 
 const ManageGrants: React.FC = () => {
-  const [grants, setGrants] = useState<(GrantResult & { source?: string; synced?: boolean })[]>([]);
-  const [loading, setLoading] = useState<boolean>(false);
-  const [error, setError] = useState<string | null>(null);
+  const [grants, setGrants] = useState<Grant[]>([]);
+  const [editingGrant, setEditingGrant] = useState<Grant | null>(null);
 
-  const [editingId, setEditingId] = useState<number | null>(null);
-  const [editName, setEditName] = useState<string>("");
-  const [editAmount, setEditAmount] = useState<number>(0);
-
-  const [filter, setFilter] = useState<"all" | "mock" | "real">("all");
-
-  useEffect(() => {
-    const loadData = async () => {
-      setLoading(true);
-      setError(null);
-
-      try {
-        if (!getApiMode()) {
-          // Mock mode → load from localStorage if available
-          const saved = localStorage.getItem(STORAGE_KEY);
-          if (saved) {
-            setGrants(JSON.parse(saved));
-          } else {
-            const data = await fetchGrants();
-            const tagged = data.map((g) => ({ ...g, source: "mock" }));
-            setGrants(tagged);
-            localStorage.setItem(STORAGE_KEY, JSON.stringify(tagged));
-          }
-        } else {
-          // Real mode → fetch API and merge mock
-          const data = await fetchGrants();
-          const taggedReal = data.map((g) => ({ ...g, source: "real" }));
-
-          const saved = localStorage.getItem(STORAGE_KEY);
-          if (saved) {
-            const mockRecords: GrantResult[] = JSON.parse(saved);
-            const taggedMock = mockRecords.map((g) => ({ ...g, source: "mock" }));
-
-            // ✅ Sync mock records into real API
-            await syncMockGrants(mockRecords);
-
-            // Mark them as synced
-            const syncedMock = taggedMock.map((g) => ({ ...g, synced: true }));
-
-            setGrants([...syncedMock, ...taggedReal]);
-          } else {
-            setGrants(taggedReal);
-          }
-        }
-      } catch (err: any) {
-        setError(err.message || "Failed to load grants");
-      }
-
-      setLoading(false);
-    };
-
-    loadData();
-  }, []);
-
-  // Persist mock grants whenever they change
-  useEffect(() => {
-    if (!getApiMode()) {
-      const mockOnly = grants.filter((g) => g.source === "mock");
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(mockOnly));
-    }
-  }, [grants]);
-
-  const handleDelete = (id: number) => {
-    setGrants((prev) => prev.filter((g) => g.id !== id));
-  };
-
-  const handleEdit = (grant: GrantResult & { source?: string }) => {
-    setEditingId(grant.id);
-    setEditName(grant.name);
-    setEditAmount(grant.amount);
-  };
-
-  const handleSave = () => {
-    setGrants((prev) =>
-      prev.map((g) =>
-        g.id === editingId ? { ...g, name: editName, amount: editAmount } : g
-      )
-    );
-    setEditingId(null);
-  };
-
-  const handleNewGrant = () => {
-    const newGrant: GrantResult & { source?: string } = {
-      id: Date.now(),
+  const addMockGrant = () => {
+    const newGrant: Grant = {
+      id: Date.now().toString(),
       name: "New Mock Grant",
-      amount: 0,
-      source: "mock",
+      amount: "$0",
+      description: "Draft grant write-up...",
+      status: "Draft",
     };
-    setGrants((prev) => [newGrant, ...prev]);
-    setEditingId(newGrant.id);
-    setEditName(newGrant.name);
-    setEditAmount(newGrant.amount);
+    setGrants([...grants, newGrant]);
   };
 
-  const filteredGrants =
-    filter === "all" ? grants : grants.filter((g) => g.source === filter);
+  const saveGrant = (updated: Grant) => {
+    setGrants(grants.map(g => g.id === updated.id ? updated : g));
+    setEditingGrant(null);
+  };
+
+  const deleteGrant = (id: string) => {
+    setGrants(grants.filter(g => g.id !== id));
+  };
 
   return (
-    <div>
-      <h2>Manage Grants</h2>
+    <div className="space-y-4">
+      <h2 className="text-2xl font-semibold">Manage Grants</h2>
+      <button
+        className="px-4 py-2 bg-brand-primary text-white rounded hover:bg-brand-dark"
+        onClick={addMockGrant}
+      >
+        + New Mock Grant
+      </button>
 
-      {loading && <p>Loading grants...</p>}
-      {error && <p style={{ color: "red" }}>{error}</p>}
-
-      {/* Filter controls */}
-      <div style={{ marginBottom: "1rem" }}>
-        <label>Filter: </label>
-        <select value={filter} onChange={(e) => setFilter(e.target.value as any)}>
-          <option value="all">All</option>
-          <option value="mock">Mock Only</option>
-          <option value="real">Real Only</option>
-        </select>
+      <div className="grid md:grid-cols-2 gap-4 mt-4">
+        {grants.map(grant => (
+          <div key={grant.id} className="border rounded p-4 shadow">
+            <h3 className="text-xl font-bold">{grant.name}</h3>
+            <p className="text-gray-600">{grant.amount}</p>
+            <p className="mt-2">{grant.description}</p>
+            <p className="mt-2 text-sm text-gray-500">Status: {grant.status}</p>
+            <div className="mt-3 flex gap-3">
+              <button
+                className="px-3 py-1 bg-brand-accent text-white rounded hover:bg-brand-dark"
+                onClick={() => setEditingGrant(grant)}
+              >
+                Edit
+              </button>
+              <button
+                className="px-3 py-1 bg-red-500 text-white rounded hover:bg-red-700"
+                onClick={() => deleteGrant(grant.id)}
+              >
+                Delete
+              </button>
+            </div>
+          </div>
+        ))}
       </div>
 
-      {/* New Grant button (only in mock mode) */}
-      {!getApiMode() && (
-        <div style={{ marginBottom: "1rem" }}>
-          <button onClick={handleNewGrant}>+ New Mock Grant</button>
+      {editingGrant && (
+        <div className="border rounded p-4 shadow mt-6 bg-gray-50">
+          <h3 className="text-xl font-bold">Editing {editingGrant.name}</h3>
+          <textarea
+            className="mt-2 w-full border rounded p-2"
+            rows={5}
+            value={editingGrant.description}
+            onChange={e =>
+              setEditingGrant({ ...editingGrant, description: e.target.value })
+            }
+          />
+          <div className="flex gap-3 mt-3">
+            <button
+              className="px-4 py-2 bg-brand-primary text-white rounded hover:bg-brand-dark"
+              onClick={() => saveGrant(editingGrant)}
+            >
+              Save
+            </button>
+            <button
+              className="px-4 py-2 bg-white border rounded hover:bg-gray-50"
+              onClick={() => setEditingGrant(null)}
+            >
+              Cancel
+            </button>
+            <button
+              className="px-4 py-2 bg-brand-accent text-white rounded hover:bg-brand-dark"
+              onClick={() => alert(`AI drafting text for ${editingGrant.name}`)}
+            >
+              AI Write Assist
+            </button>
+          </div>
         </div>
       )}
-
-      <div style={{ marginTop: "1rem" }}>
-        {filteredGrants.length > 0 ? (
-          <table>
-            <thead>
-              <tr>
-                <th>Grant Name</th>
-                <th>Amount</th>
-                <th>Source</th>
-                <th>Status</th>
-                <th>Actions</th>
-              </tr>
-            </thead>
-            <tbody>
-              {filteredGrants.map((grant) => (
-                <tr key={grant.id}>
-                  <td>
-                    {editingId === grant.id ? (
-                      <input
-                        type="text"
-                        value={editName}
-                        onChange={(e) => setEditName(e.target.value)}
-                      />
-                    ) : (
-                      grant.name
-                    )}
-                  </td>
-                  <td>
-                    {editingId === grant.id ? (
-                      <input
-                        type="number"
-                        value={editAmount}
-                        onChange={(e) => setEditAmount(Number(e.target.value))}
-                      />
-                    ) : (
-                      `$${grant.amount}`
-                    )}
-                  </td>
-                  <td>
-                    {grant.source === "mock" ? (
-                      <span style={{ color: "orange", fontWeight: "bold" }}>Mock</span>
-                    ) : (
-                      <span style={{ color: "green", fontWeight: "bold" }}>Real</span>
-                    )}
-                  </td>
-                  <td>
-                    {grant.source === "mock" && grant.synced ? (
-                      <span style={{ color: "blue", fontWeight: "bold" }}>Synced</span>
-                    ) : grant.source === "mock" ? (
-                      <span style={{ color: "gray" }}>Local Only</span>
-                    ) : (
-                      <span style={{ color: "green" }}>Live</span>
-                    )}
-                  </td>
-                  <td>
-                    {editingId === grant.id ? (
-                      <>
-                        <button onClick={handleSave}>Save</button>
-                        <button onClick={() => setEditingId(null)}>Cancel</button>
-                      </>
-                    ) : (
-                      <>
-                        <button onClick={() => handleEdit(grant)}>Edit</button>
-                        <button onClick={() => handleDelete(grant.id)}>Delete</button>
-                      </>
-                    )}
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        ) : (
-          !loading &&
-          !error && <p>No grants available. Try switching API mode or saving a key.</p>
-        )}
-      </div>
     </div>
   );
 };

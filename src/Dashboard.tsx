@@ -1,55 +1,46 @@
-import React, { useState, useEffect } from "react";
-import { fetchGrants, GrantResult } from "./utils/api";
+// src/Dashboard.tsx
+import React, { useEffect, useState } from "react";
+
+interface Grant {
+  id: string;
+  name: string;
+  amount: string;
+  description: string;
+  status: "Draft" | "Submitted" | "Approved";
+}
 
 const Dashboard: React.FC = () => {
-  const [grants, setGrants] = useState<GrantResult[]>([]);
-  const [loading, setLoading] = useState<boolean>(false);
-  const [error, setError] = useState<string | null>(null);
+  const [grants, setGrants] = useState<Grant[]>([]);
 
   useEffect(() => {
-    const loadData = async () => {
-      setLoading(true);
-      setError(null);
-
-      try {
-        const data = await fetchGrants();
-        setGrants(data);
-      } catch (err: any) {
-        setError(err.message || "Failed to load grants");
-      }
-
-      setLoading(false);
-    };
-
-    loadData();
-  }, []); // ✅ runs once when Dashboard mounts
+    const raw = localStorage.getItem("grants");
+    if (raw) {
+      setGrants(JSON.parse(raw));
+    }
+  }, []);
 
   return (
-    <div>
-      <h2>Dashboard</h2>
+    <div className="space-y-4">
+      <h2 className="text-2xl font-semibold">Dashboard</h2>
+      <p className="text-gray-700">
+        Overview of your saved and managed grants.
+      </p>
 
-      {loading && <p>Loading grants...</p>}
-      {error && <p style={{ color: "red" }}>{error}</p>}
-
-      <table>
-        <thead>
-          <tr>
-            <th>Grant Name</th>
-            <th>Amount</th>
-          </tr>
-        </thead>
-        <tbody>
+      {grants.length === 0 ? (
+        <p className="text-gray-500">No grants created yet.</p>
+      ) : (
+        <div className="grid md:grid-cols-2 gap-4 mt-4">
           {grants.map((grant) => (
-            <tr key={grant.id}>
-              <td>{grant.name}</td>
-              <td>${grant.amount}</td>
-            </tr>
+            <div key={grant.id} className="border rounded p-4 shadow">
+              <h3 className="text-xl font-bold">{grant.name}</h3>
+              <p className="text-gray-600">{grant.amount}</p>
+              <p className="mt-2">{grant.description}</p>
+              <p className="mt-2 text-sm text-gray-500">
+                Status: {grant.status}
+              </p>
+            </div>
           ))}
-        </tbody>
-      </table>
-
-      {!loading && grants.length === 0 && !error && (
-        <p>No grants available. Try switching API mode or saving a key.</p>
+        </div>
       )}
     </div>
   );
