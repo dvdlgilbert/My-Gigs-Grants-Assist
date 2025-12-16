@@ -4,8 +4,8 @@ import { Link } from "react-router-dom";
 
 interface Grant {
   id: string;
-  title: string;
-  description: string;
+  title?: string;        // made optional to avoid crashes
+  description?: string;  // also optional
   status: "draft" | "submitted" | "approved" | "rejected";
 }
 
@@ -15,9 +15,14 @@ const ManageGrants: React.FC = () => {
   const [sort, setSort] = useState<string>("title");
 
   useEffect(() => {
-    const raw = localStorage.getItem("grants");
-    if (raw) {
-      setGrants(JSON.parse(raw));
+    try {
+      const raw = localStorage.getItem("grants");
+      if (raw) {
+        setGrants(JSON.parse(raw));
+      }
+    } catch (err) {
+      console.error("Failed to parse grants:", err);
+      setGrants([]);
     }
   }, []);
 
@@ -27,7 +32,9 @@ const ManageGrants: React.FC = () => {
 
   const sortedGrants = [...filteredGrants].sort((a, b) => {
     if (sort === "title") {
-      return a.title.localeCompare(b.title);
+      const titleA = a.title || "";
+      const titleB = b.title || "";
+      return titleA.localeCompare(titleB);
     } else if (sort === "status") {
       const order = ["draft", "submitted", "approved", "rejected"];
       return order.indexOf(a.status) - order.indexOf(b.status);
@@ -39,8 +46,8 @@ const ManageGrants: React.FC = () => {
     <div className="p-6 bg-white shadow rounded">
       <h2 className="text-2xl font-bold mb-4">Manage Grants</h2>
 
-      {/* Filter controls */}
-      <div className="flex gap-4 mb-4">
+      {/* Filter & Sort controls */}
+      <div className="flex gap-6 mb-4">
         <label>
           Filter:
           <select
@@ -80,8 +87,10 @@ const ManageGrants: React.FC = () => {
               className="border p-3 rounded flex justify-between items-center"
             >
               <div>
-                <h3 className="font-semibold">{grant.title}</h3>
-                <p className="text-sm text-gray-600">{grant.description}</p>
+                <h3 className="font-semibold">{grant.title || "(Untitled Grant)"}</h3>
+                <p className="text-sm text-gray-600">
+                  {grant.description || "No description provided."}
+                </p>
                 <p className="text-sm font-medium">Status: {grant.status}</p>
               </div>
               <Link
