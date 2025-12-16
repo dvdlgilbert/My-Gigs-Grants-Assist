@@ -1,5 +1,6 @@
 // src/Dashboard.tsx
 import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 interface Grant {
   id: string;
@@ -13,6 +14,7 @@ const Dashboard: React.FC = () => {
   const [grants, setGrants] = useState<Grant[]>([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [statusFilter, setStatusFilter] = useState<Grant["status"] | "All">("All");
+  const navigate = useNavigate();
 
   const loadGrants = () => {
     const raw = localStorage.getItem("grants");
@@ -89,7 +91,11 @@ const Dashboard: React.FC = () => {
       ) : (
         <div className="grid md:grid-cols-2 gap-4 mt-4">
           {filteredGrants.map((grant) => (
-            <div key={grant.id} className="border rounded p-4 shadow">
+            <div
+              key={grant.id}
+              className="border rounded p-4 shadow cursor-pointer hover:bg-gray-50"
+              onClick={() => navigate(`/grant/${grant.id}`)}
+            >
               <h3 className="text-xl font-bold">{grant.name}</h3>
               <p className="text-gray-600">{grant.amount}</p>
               <p className="mt-2">{grant.description}</p>
