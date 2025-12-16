@@ -29,11 +29,11 @@ const Dashboard: React.FC = () => {
     const base = "px-2 py-1 rounded-full text-xs font-semibold";
     switch (status) {
       case "Draft":
-        return `${base} bg-gray-500 text-white`;
+        return `${base} bg-gray-500 text-black`;
       case "Submitted":
-        return `${base} bg-blue-600 text-white`;
+        return `${base} bg-blue-600 text-black`;
       case "Approved":
-        return `${base} bg-green-600 text-white`;
+        return `${base} bg-green-600 text-black`;
       default:
         return base;
     }
