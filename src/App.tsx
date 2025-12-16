@@ -1,6 +1,14 @@
 // src/App.tsx
 import React, { useEffect, useState } from "react";
-import { BrowserRouter as Router, Routes, Route, Navigate, Link, useNavigate } from "react-router-dom";
+import {
+  HashRouter as Router,   // ✅ HashRouter works best with GitHub Pages
+  Routes,
+  Route,
+  Navigate,
+  Link,
+  useNavigate
+} from "react-router-dom";
+
 import Finder from "./Finder";
 import Dashboard from "./Dashboard";
 import ManageGrants from "./ManageGrants";
@@ -38,8 +46,7 @@ const AppShell: React.FC = () => {
   const handleSaveProfile = (data: OrgProfile) => {
     setProfile(data);
     localStorage.setItem("orgProfile", JSON.stringify(data));
-    // After saving, go back to dashboard
-    navigate("/dashboard");
+    navigate("/dashboard"); // ✅ after saving, go back to dashboard
   };
 
   const toggleMode = () => {
@@ -102,7 +109,7 @@ const AppShell: React.FC = () => {
           <Route path="/finder" element={<Finder />} />
           <Route path="/manage" element={<ManageGrants />} />
 
-          {/* Grant detail view (Step 4) */}
+          {/* Grant detail view */}
           <Route path="/grant/:id" element={<GrantDetail />} />
 
           {/* Fallback for unknown routes */}
