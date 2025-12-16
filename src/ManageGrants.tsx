@@ -38,12 +38,23 @@ const ManageGrants: React.FC = () => {
   };
 
   const handleEdit = (id: string) => {
-    navigate(`/grant/${id}`);
+    navigate(`/grant/${id}`); // takes you to GrantDetail fields
   };
 
   const handleAIWriteAssist = (id: string) => {
-    // Stub: replace with your AI integration
     alert(`AI Write Assist triggered for grant ${id}`);
+  };
+
+  const handleCreateNew = () => {
+    const newGrant: Grant = {
+      id: Date.now().toString(),
+      title: "",
+      description: "",
+      status: "draft"
+    };
+    const updated = [...grants, newGrant];
+    saveGrants(updated);
+    navigate(`/grant/${newGrant.id}`);
   };
 
   const filteredGrants = grants.filter((g) =>
@@ -64,10 +75,18 @@ const ManageGrants: React.FC = () => {
 
   return (
     <div className="p-6 bg-white shadow rounded">
-      <h2 className="text-2xl font-bold mb-4">Manage Grants</h2>
+      <div className="flex justify-between items-center mb-4">
+        <h2 className="text-2xl font-bold">Manage Grants</h2>
+        <button
+          onClick={handleCreateNew}
+          className="px-4 py-2 bg-brand-primary text-white rounded hover:bg-brand-dark"
+        >
+          + New Grant
+        </button>
+      </div>
 
       {/* Filter & Sort controls */}
-      <div className="flex gap-6 mb-4">
+      <div className="flex gap-6 mb-6">
         <label>
           Filter:
           <select
@@ -96,27 +115,24 @@ const ManageGrants: React.FC = () => {
         </label>
       </div>
 
-      {/* Grant list */}
+      {/* Grant cards */}
       {sortedGrants.length === 0 ? (
         <p>No grants found.</p>
       ) : (
-        <ul className="space-y-3">
+        <div className="grid gap-4 md:grid-cols-2">
           {sortedGrants.map((grant) => (
-            <li
-              key={grant.id}
-              className="border p-3 rounded flex justify-between items-center"
-            >
+            <div key={grant.id} className="border rounded shadow p-4 flex flex-col justify-between">
               <div>
-                <h3 className="font-semibold">{grant.title || "(Untitled Grant)"}</h3>
-                <p className="text-sm text-gray-600">
+                <h3 className="font-semibold text-lg">{grant.title || "(Untitled Grant)"}</h3>
+                <p className="text-sm text-gray-600 mb-2">
                   {grant.description || "No description provided."}
                 </p>
-                <p className="text-sm font-medium">Status: {grant.status}</p>
+                <p className="text-sm font-medium mb-4">Status: {grant.status}</p>
               </div>
-              <div className="flex gap-2">
+              <div className="flex flex-wrap gap-2 mt-auto">
                 <Link
                   to={`/grant/${grant.id}`}
-                  className="px-3 py-1 bg-brand-primary text-white rounded hover:bg-brand-dark"
+                  className="px-3 py-1 bg-blue-600 text-white rounded hover:bg-blue-700"
                 >
                   View
                 </Link>
@@ -141,9 +157,9 @@ const ManageGrants: React.FC = () => {
                   AI Write Assist
                 </button>
               </div>
-            </li>
+            </div>
           ))}
-        </ul>
+        </div>
       )}
     </div>
   );
