@@ -28,6 +28,8 @@ const AppShell: React.FC = () => {
     (localStorage.getItem("mode") as "mock" | "real") || "mock"
   );
 
+  const navigate = useNavigate();
+
   useEffect(() => {
     const raw = localStorage.getItem("orgProfile");
     if (raw) setProfile(JSON.parse(raw));
@@ -36,7 +38,8 @@ const AppShell: React.FC = () => {
   const handleSaveProfile = (data: OrgProfile) => {
     setProfile(data);
     localStorage.setItem("orgProfile", JSON.stringify(data));
-    // Stay on ProfileForm after saving so banner can show; navigation handled by the form's onCancel
+    // After saving, go back to dashboard
+    navigate("/dashboard");
   };
 
   const toggleMode = () => {
@@ -76,9 +79,9 @@ const AppShell: React.FC = () => {
             element={
               <Home
                 profilePresent={!!profile}
-                onGoDashboard={() => (window.location.href = "/dashboard")}
+                onGoDashboard={() => navigate("/dashboard")}
                 onShowApiKey={() => setShowApiKeyInput(true)}
-                onGoProfile={() => (window.location.href = "/profile")}
+                onGoProfile={() => navigate("/profile")}
               />
             }
           />
@@ -91,13 +94,12 @@ const AppShell: React.FC = () => {
               <ProfileForm
                 initial={profile || undefined}
                 onSave={handleSaveProfile}
-                onCancel={() => (window.location.href = "/dashboard")}
+                onCancel={() => navigate("/dashboard")}
               />
             }
           />
 
           <Route path="/finder" element={<Finder />} />
-
           <Route path="/manage" element={<ManageGrants />} />
 
           {/* Grant detail view (Step 4) */}
