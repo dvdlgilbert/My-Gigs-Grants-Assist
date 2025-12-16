@@ -1,5 +1,6 @@
 // src/ManageGrants.tsx
 import React, { useState, useEffect } from "react";
+import AIHelper from "./AIHelper"; // <-- import your AI helper component
 
 interface Grant {
   id: string;
@@ -13,7 +14,6 @@ const ManageGrants: React.FC = () => {
   const [grants, setGrants] = useState<Grant[]>([]);
   const [editingGrant, setEditingGrant] = useState<Grant | null>(null);
 
-  // Load grants from localStorage on mount
   useEffect(() => {
     const raw = localStorage.getItem("grants");
     if (raw) {
@@ -22,8 +22,16 @@ const ManageGrants: React.FC = () => {
   }, []);
 
   const persistGrants = (updated: Grant[]) => {
-    setGrants(updated);
-    localStorage.setItem("grants", JSON.stringify(updated));
+    const raw = localStorage.getItem("grants");
+    const existing: Grant[] = raw ? JSON.parse(raw) : [];
+
+    const merged = [
+      ...existing.filter((g) => !updated.find((u) => u.id === g.id)),
+      ...updated,
+    ];
+
+    setGrants(merged);
+    localStorage.setItem("grants", JSON.stringify(merged));
   };
 
   const addMockGrant = () => {
@@ -135,6 +143,8 @@ const ManageGrants: React.FC = () => {
             >
               Cancel
             </button>
+            {/* AI Writing Assist button at bottom of edit view */}
+            <AIHelper grant={editingGrant} />
           </div>
         </div>
       )}
