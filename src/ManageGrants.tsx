@@ -1,6 +1,7 @@
 // src/ManageGrants.tsx
 import React, { useState, useEffect } from "react";
 import AIHelper from "./AIHelper";
+import UnsavedChangesModal from "./UnsavedChangesModal";
 
 interface Grant {
   id: string;
@@ -13,6 +14,7 @@ interface Grant {
 const ManageGrants: React.FC = () => {
   const [grants, setGrants] = useState<Grant[]>([]);
   const [editingGrant, setEditingGrant] = useState<Grant | null>(null);
+  const [showUnsavedModal, setShowUnsavedModal] = useState(false);
 
   // Load grants from localStorage on mount
   useEffect(() => {
@@ -144,7 +146,7 @@ const ManageGrants: React.FC = () => {
             </button>
             <button
               className="px-4 py-2 bg-white border rounded hover:bg-gray-50"
-              onClick={() => setEditingGrant(null)}
+              onClick={() => setShowUnsavedModal(true)} // trigger modal
             >
               Cancel
             </button>
@@ -159,6 +161,17 @@ const ManageGrants: React.FC = () => {
               }
             />
           </div>
+
+          {/* Unsaved Changes Modal */}
+          {showUnsavedModal && (
+            <UnsavedChangesModal
+              onStay={() => setShowUnsavedModal(false)}
+              onLeave={() => {
+                setEditingGrant(null);
+                setShowUnsavedModal(false);
+              }}
+            />
+          )}
         </div>
       )}
     </div>
