@@ -7,12 +7,29 @@ import ApiKeyInput from "./components/ApiKeyInput";
 import Home from "./Home";
 import ProfileForm, { OrgProfile } from "./ProfileForm";
 
+// Stubbed real API fetch function — replace with your actual API call
+async function fetchRealGrants() {
+  try {
+    const response = await fetch("/api/grants"); // <-- adjust endpoint
+    if (!response.ok) throw new Error("Failed to fetch grants");
+    return await response.json();
+  } catch (err) {
+    console.error("Real API fetch failed:", err);
+    return [];
+  }
+}
+
 type View = "home" | "dashboard" | "finder" | "manage" | "profile";
 
 const App: React.FC = () => {
   const [view, setView] = useState<View>("home");
   const [showApiKeyInput, setShowApiKeyInput] = useState(false);
   const [profile, setProfile] = useState<OrgProfile | null>(null);
+
+  // Mode toggle: "mock" (localStorage) or "real" (API)
+  const [mode, setMode] = useState<"mock" | "real">(
+    (localStorage.getItem("mode") as "mock" | "real") || "mock"
+  );
 
   useEffect(() => {
     const raw = localStorage.getItem("orgProfile");
@@ -22,8 +39,13 @@ const App: React.FC = () => {
   const handleSaveProfile = (data: OrgProfile) => {
     setProfile(data);
     localStorage.setItem("orgProfile", JSON.stringify(data));
-    // ✅ Stay on ProfileForm after saving so banner can show
-    // Do not auto-navigate to Dashboard here
+    // Stay on ProfileForm after saving so banner can show
+  };
+
+  const toggleMode = () => {
+    const newMode = mode === "mock" ? "real" : "mock";
+    setMode(newMode);
+    localStorage.setItem("mode", newMode);
   };
 
   return (
@@ -38,6 +60,13 @@ const App: React.FC = () => {
           <button className="px-4 py-2 bg-white border rounded hover:bg-gray-50" onClick={() => setView("profile")}>Profile</button>
           <button className="px-4 py-2 bg-white border rounded hover:bg-gray-50" onClick={() => setView("finder")}>Finder</button>
           <button className="px-4 py-2 bg-white border rounded hover:bg-gray-50" onClick={() => setView("manage")}>Manage Grants</button>
+          {/* Mode toggle */}
+          <button
+            className="px-4 py-2 bg-brand-accent text-white rounded hover:bg-brand-dark"
+            onClick={toggleMode}
+          >
+            {mode === "mock" ? "Switch to Real Mode" : "Switch to Mock Mode"}
+          </button>
         </nav>
       </header>
 
@@ -50,7 +79,9 @@ const App: React.FC = () => {
             onGoProfile={() => setView("profile")}
           />
         )}
-        {view === "dashboard" && <Dashboard />}
+        {view === "dashboard" && (
+          <Dashboard />
+        )}
         {view === "profile" && (
           <ProfileForm
             initial={profile || undefined}
