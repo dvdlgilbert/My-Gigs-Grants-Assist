@@ -1,7 +1,5 @@
 // src/ManageGrants.tsx
 import React, { useState, useEffect } from "react";
-import AIHelper from "./AIHelper";
-import UnsavedChangesModal from "./UnsavedChangesModal";
 
 interface Grant {
   id: string;
@@ -13,175 +11,112 @@ interface Grant {
 
 const ManageGrants: React.FC = () => {
   const [grants, setGrants] = useState<Grant[]>([]);
-  const [editingGrant, setEditingGrant] = useState<Grant | null>(null);
-  const [showUnsavedModal, setShowUnsavedModal] = useState(false);
+  const [newGrant, setNewGrant] = useState<Grant>({
+    id: "",
+    name: "",
+    amount: "",
+    description: "",
+    status: "Draft",
+  });
 
   useEffect(() => {
     const raw = localStorage.getItem("grants");
-    if (raw) {
-      setGrants(JSON.parse(raw));
-    }
+    if (raw) setGrants(JSON.parse(raw));
   }, []);
 
-  const persistGrants = (updated: Grant[]) => {
-    const raw = localStorage.getItem("grants");
-    const existing: Grant[] = raw ? JSON.parse(raw) : [];
-    const merged = [
-      ...existing.filter((g) => !updated.find((u) => u.id === g.id)),
-      ...updated,
-    ];
-    setGrants(merged);
-    localStorage.setItem("grants", JSON.stringify(merged));
+  const saveGrants = (updated: Grant[]) => {
+    setGrants(updated);
+    localStorage.setItem("grants", JSON.stringify(updated));
   };
 
-  const addMockGrant = () => {
-    const newGrant: Grant = {
-      id: Date.now().toString(),
-      name: "New Mock Grant",
-      amount: "$0",
-      description: "Draft grant write-up...",
-      status: "Draft",
-    };
-    persistGrants([newGrant]);
+  const addGrant = () => {
+    if (!newGrant.name) return;
+    const grant = { ...newGrant, id: Date.now().toString() };
+    const updated = [...grants, grant];
+    saveGrants(updated);
+    setNewGrant({ id: "", name: "", amount: "", description: "", status: "Draft" });
   };
 
-  const saveGrant = (updated: Grant) => {
-    const updatedList = grants.map((g) => (g.id === updated.id ? updated : g));
-    persistGrants(updatedList);
-    setEditingGrant(null);
+  const updateGrant = (id: string, field: keyof Grant, value: string) => {
+    const updated = grants.map((g) =>
+      g.id === id ? { ...g, [field]: value } : g
+    );
+    saveGrants(updated);
   };
 
   const deleteGrant = (id: string) => {
-    const updatedList = grants.filter((g) => g.id !== id);
-    persistGrants(updatedList);
-  };
-
-  const statusBadge = (status: Grant["status"]) => {
-    const base = "px-2 py-1 rounded-full text-xs font-semibold";
-    switch (status) {
-      case "Draft":
-        return `${base} bg-gray-500 text-black`;
-      case "Submitted":
-        return `${base} bg-blue-600 text-black`;
-      case "Approved":
-        return `${base} bg-green-600 text-black`;
-      default:
-        return base;
-    }
+    const updated = grants.filter((g) => g.id !== id);
+    saveGrants(updated);
   };
 
   return (
     <div className="space-y-4">
       <h2 className="text-2xl font-semibold">Manage Grants</h2>
-      <button
-        className="px-4 py-2 bg-brand-primary text-white rounded hover:bg-brand-dark"
-        onClick={addMockGrant}
-      >
-        + New Mock Grant
-      </button>
 
-      <div className="grid md:grid-cols-2 gap-4 mt-4">
+      {/* Add new grant */}
+      <div className="border p-4 rounded space-y-2">
+        <input
+          type="text"
+          placeholder="Grant name"
+          className="border rounded p-2 w-full"
+          value={newGrant.name}
+          onChange={(e) => setNewGrant({ ...newGrant, name: e.target.value })}
+        />
+        <input
+          type="text"
+          placeholder="Amount"
+          className="border rounded p-2 w-full"
+          value={newGrant.amount}
+          onChange={(e) => setNewGrant({ ...newGrant, amount: e.target.value })}
+        />
+        <textarea
+          placeholder="Description"
+          className="border rounded p-2 w-full"
+          value={newGrant.description}
+          onChange={(e) => setNewGrant({ ...newGrant, description: e.target.value })}
+        />
+        <button
+          className="px-4 py-2 bg-brand-primary text-white rounded hover:bg-brand-dark"
+          onClick={addGrant}
+        >
+          Add Grant
+        </button>
+      </div>
+
+      {/* Existing grants */}
+      <div className="space-y-4">
         {grants.map((grant) => (
-          <div key={grant.id} className="border rounded p-4 shadow">
-            <h3 className="text-xl font-bold">{grant.name}</h3>
-            <p className="text-gray-600">{grant.amount}</p>
-            <p className="mt-2">{grant.description}</p>
-            <p className="mt-2 text-sm text-gray-500 flex items-center gap-2">
-              Status: <span className={statusBadge(grant.status)}>{grant.status}</span>
-            </p>
-            <div className="mt-3 flex gap-3">
-              <button
-                className="px-3 py-1 bg-brand-accent text-white rounded hover:bg-brand-dark"
-                onClick={() => setEditingGrant(grant)}
-              >
-                Edit
-              </button>
-              <button
-                className="px-3 py-1 bg-red-500 text-white rounded hover:bg-red-700"
-                onClick={() => deleteGrant(grant.id)}
-              >
-                Delete
-              </button>
-            </div>
+          <div key={grant.id} className="border rounded p-4 shadow space-y-2">
+            <input
+              type="text"
+              value={grant.name}
+              disabled={grant.status === "Submitted"}
+              className="border rounded p-2 w-full"
+              onChange={(e) => updateGrant(grant.id, "name", e.target.value)}
+            />
+            <input
+              type="text"
+              value={grant.amount}
+              disabled={grant.status === "Submitted"}
+              className="border rounded p-2 w-full"
+              onChange={(e) => updateGrant(grant.id, "amount", e.target.value)}
+            />
+            <textarea
+              value={grant.description}
+              disabled={grant.status === "Submitted"}
+              className="border rounded p-2 w-full"
+              onChange={(e) => updateGrant(grant.id, "description", e.target.value)}
+            />
+            <p className="text-sm text-gray-500">Status: {grant.status}</p>
+            <button
+              className="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700"
+              onClick={() => deleteGrant(grant.id)}
+            >
+              Delete
+            </button>
           </div>
         ))}
       </div>
-
-      {editingGrant && (
-        <div className="border rounded p-4 shadow mt-6 bg-gray-50">
-          <h3 className="text-xl font-bold">Editing {editingGrant.name}</h3>
-          <input
-            className="mt-2 w-full border rounded p-2"
-            value={editingGrant.name}
-            onChange={(e) =>
-              setEditingGrant({ ...editingGrant, name: e.target.value })
-            }
-          />
-          <input
-            className="mt-2 w-full border rounded p-2"
-            value={editingGrant.amount}
-            onChange={(e) =>
-              setEditingGrant({ ...editingGrant, amount: e.target.value })
-            }
-          />
-          <textarea
-            className="mt-2 w-full border rounded p-2"
-            rows={5}
-            value={editingGrant.description}
-            onChange={(e) =>
-              setEditingGrant({ ...editingGrant, description: e.target.value })
-            }
-          />
-          <select
-            className="mt-2 w-full border rounded p-2"
-            value={editingGrant.status}
-            onChange={(e) =>
-              setEditingGrant({
-                ...editingGrant,
-                status: e.target.value as Grant["status"],
-              })
-            }
-          >
-            <option value="Draft">Draft</option>
-            <option value="Submitted">Submitted</option>
-            <option value="Approved">Approved</option>
-          </select>
-
-          <div className="flex gap-3 mt-3">
-            <button
-              className="px-4 py-2 bg-brand-primary text-white rounded hover:bg-brand-dark"
-              onClick={() => saveGrant(editingGrant)}
-            >
-              Save
-            </button>
-            <button
-              className="px-4 py-2 bg-white border rounded hover:bg-gray-50"
-              onClick={() => setShowUnsavedModal(true)}
-            >
-              Cancel
-            </button>
-          </div>
-
-          <div className="mt-3">
-            <AIHelper
-              grant={editingGrant}
-              onApply={(newText) =>
-                setEditingGrant({ ...editingGrant, description: newText })
-              }
-            />
-          </div>
-
-          {showUnsavedModal && (
-            <UnsavedChangesModal
-              onStay={() => setShowUnsavedModal(false)}
-              onLeave={() => {
-                setEditingGrant(null);
-                setShowUnsavedModal(false);
-              }}
-            />
-          )}
-        </div>
-      )}
     </div>
   );
 };

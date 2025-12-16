@@ -56,19 +56,39 @@ const GrantDetail: React.FC = () => {
         Status: <span className={statusBadge(grant.status)}>{grant.status}</span>
       </p>
 
-      <div className="mt-4">
-        <AIHelper
-          grant={grant}
-          onApply={(newText) => {
-            const updated = { ...grant, description: newText };
+      {/* AI Write Assist */}
+      {grant.status === "Draft" && (
+        <div className="mt-4">
+          <AIHelper
+            grant={grant}
+            onApply={(newText) => {
+              const updated = { ...grant, description: newText };
+              const updatedList = grants.map((g) =>
+                g.id === grant.id ? updated : g
+              );
+              localStorage.setItem("grants", JSON.stringify(updatedList));
+              navigate(0); // reload detail view
+            }}
+          />
+        </div>
+      )}
+
+      {/* Submit button only for Draft */}
+      {grant.status === "Draft" && (
+        <button
+          className="mt-4 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
+          onClick={() => {
+            const updated = { ...grant, status: "Submitted" };
             const updatedList = grants.map((g) =>
               g.id === grant.id ? updated : g
             );
             localStorage.setItem("grants", JSON.stringify(updatedList));
             navigate(0); // reload detail view
           }}
-        />
-      </div>
+        >
+          Submit Grant
+        </button>
+      )}
 
       <button
         className="mt-6 px-4 py-2 bg-brand-primary text-white rounded hover:bg-brand-dark"
