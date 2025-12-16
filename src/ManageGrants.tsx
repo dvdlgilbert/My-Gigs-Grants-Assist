@@ -60,11 +60,11 @@ const ManageGrants: React.FC = () => {
     const base = "px-2 py-1 rounded-full text-xs font-semibold";
     switch (status) {
       case "Draft":
-        return `${base} bg-gray-300 text-gray-800`;
+        return `${base} bg-gray-500 text-white`;
       case "Submitted":
-        return `${base} bg-blue-300 text-blue-800`;
+        return `${base} bg-blue-600 text-white`;
       case "Approved":
-        return `${base} bg-green-300 text-green-800`;
+        return `${base} bg-green-600 text-white`;
       default:
         return base;
     }
