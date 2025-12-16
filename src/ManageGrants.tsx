@@ -1,6 +1,6 @@
 // src/ManageGrants.tsx
 import React, { useState, useEffect } from "react";
-import AIHelper from "./AIHelper"; // <-- import your AI helper component
+import AIHelper from "./AIHelper";
 
 interface Grant {
   id: string;
@@ -14,6 +14,7 @@ const ManageGrants: React.FC = () => {
   const [grants, setGrants] = useState<Grant[]>([]);
   const [editingGrant, setEditingGrant] = useState<Grant | null>(null);
 
+  // Load grants from localStorage on mount
   useEffect(() => {
     const raw = localStorage.getItem("grants");
     if (raw) {
@@ -22,9 +23,11 @@ const ManageGrants: React.FC = () => {
   }, []);
 
   const persistGrants = (updated: Grant[]) => {
+    // Always reload from localStorage before merging
     const raw = localStorage.getItem("grants");
     const existing: Grant[] = raw ? JSON.parse(raw) : [];
 
+    // Merge: replace any matching IDs, keep others
     const merged = [
       ...existing.filter((g) => !updated.find((u) => u.id === g.id)),
       ...updated,
@@ -42,7 +45,7 @@ const ManageGrants: React.FC = () => {
       description: "Draft grant write-up...",
       status: "Draft",
     };
-    persistGrants([...grants, newGrant]);
+    persistGrants([newGrant]); // merge new grant with existing
   };
 
   const saveGrant = (updated: Grant) => {
@@ -130,6 +133,8 @@ const ManageGrants: React.FC = () => {
             <option value="Submitted">Submitted</option>
             <option value="Approved">Approved</option>
           </select>
+
+          {/* Save/Cancel row */}
           <div className="flex gap-3 mt-3">
             <button
               className="px-4 py-2 bg-brand-primary text-white rounded hover:bg-brand-dark"
@@ -143,8 +148,16 @@ const ManageGrants: React.FC = () => {
             >
               Cancel
             </button>
-            {/* AI Writing Assist button at bottom of edit view */}
-            <AIHelper grant={editingGrant} />
+          </div>
+
+          {/* AIHelper below Save/Cancel */}
+          <div className="mt-3">
+            <AIHelper
+              grant={editingGrant}
+              onApply={(newText) =>
+                setEditingGrant({ ...editingGrant, description: newText })
+              }
+            />
           </div>
         </div>
       )}
