@@ -16,7 +16,6 @@ const ManageGrants: React.FC = () => {
   const [editingGrant, setEditingGrant] = useState<Grant | null>(null);
   const [showUnsavedModal, setShowUnsavedModal] = useState(false);
 
-  // Load grants from localStorage on mount
   useEffect(() => {
     const raw = localStorage.getItem("grants");
     if (raw) {
@@ -25,16 +24,12 @@ const ManageGrants: React.FC = () => {
   }, []);
 
   const persistGrants = (updated: Grant[]) => {
-    // Always reload from localStorage before merging
     const raw = localStorage.getItem("grants");
     const existing: Grant[] = raw ? JSON.parse(raw) : [];
-
-    // Merge: replace any matching IDs, keep others
     const merged = [
       ...existing.filter((g) => !updated.find((u) => u.id === g.id)),
       ...updated,
     ];
-
     setGrants(merged);
     localStorage.setItem("grants", JSON.stringify(merged));
   };
@@ -47,7 +42,7 @@ const ManageGrants: React.FC = () => {
       description: "Draft grant write-up...",
       status: "Draft",
     };
-    persistGrants([newGrant]); // merge new grant with existing
+    persistGrants([newGrant]);
   };
 
   const saveGrant = (updated: Grant) => {
@@ -59,6 +54,20 @@ const ManageGrants: React.FC = () => {
   const deleteGrant = (id: string) => {
     const updatedList = grants.filter((g) => g.id !== id);
     persistGrants(updatedList);
+  };
+
+  const statusBadge = (status: Grant["status"]) => {
+    const base = "px-2 py-1 rounded-full text-xs font-semibold";
+    switch (status) {
+      case "Draft":
+        return `${base} bg-gray-300 text-gray-800`;
+      case "Submitted":
+        return `${base} bg-blue-300 text-blue-800`;
+      case "Approved":
+        return `${base} bg-green-300 text-green-800`;
+      default:
+        return base;
+    }
   };
 
   return (
@@ -77,7 +86,9 @@ const ManageGrants: React.FC = () => {
             <h3 className="text-xl font-bold">{grant.name}</h3>
             <p className="text-gray-600">{grant.amount}</p>
             <p className="mt-2">{grant.description}</p>
-            <p className="mt-2 text-sm text-gray-500">Status: {grant.status}</p>
+            <p className="mt-2 text-sm text-gray-500 flex items-center gap-2">
+              Status: <span className={statusBadge(grant.status)}>{grant.status}</span>
+            </p>
             <div className="mt-3 flex gap-3">
               <button
                 className="px-3 py-1 bg-brand-accent text-white rounded hover:bg-brand-dark"
@@ -136,7 +147,6 @@ const ManageGrants: React.FC = () => {
             <option value="Approved">Approved</option>
           </select>
 
-          {/* Save/Cancel row */}
           <div className="flex gap-3 mt-3">
             <button
               className="px-4 py-2 bg-brand-primary text-white rounded hover:bg-brand-dark"
@@ -146,13 +156,12 @@ const ManageGrants: React.FC = () => {
             </button>
             <button
               className="px-4 py-2 bg-white border rounded hover:bg-gray-50"
-              onClick={() => setShowUnsavedModal(true)} // trigger modal
+              onClick={() => setShowUnsavedModal(true)}
             >
               Cancel
             </button>
           </div>
 
-          {/* AIHelper below Save/Cancel */}
           <div className="mt-3">
             <AIHelper
               grant={editingGrant}
@@ -162,7 +171,6 @@ const ManageGrants: React.FC = () => {
             />
           </div>
 
-          {/* Unsaved Changes Modal */}
           {showUnsavedModal && (
             <UnsavedChangesModal
               onStay={() => setShowUnsavedModal(false)}

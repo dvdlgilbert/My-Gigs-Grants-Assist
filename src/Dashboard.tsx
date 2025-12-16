@@ -25,12 +25,24 @@ const Dashboard: React.FC = () => {
     loadGrants();
   }, []);
 
+  const statusBadge = (status: Grant["status"]) => {
+    const base = "px-2 py-1 rounded-full text-xs font-semibold";
+    switch (status) {
+      case "Draft":
+        return `${base} bg-gray-300 text-gray-800`;
+      case "Submitted":
+        return `${base} bg-blue-300 text-blue-800`;
+      case "Approved":
+        return `${base} bg-green-300 text-green-800`;
+      default:
+        return base;
+    }
+  };
+
   return (
     <div className="space-y-4">
       <h2 className="text-2xl font-semibold">Dashboard</h2>
-      <p className="text-gray-700">
-        Overview of your saved and managed grants.
-      </p>
+      <p className="text-gray-700">Overview of your saved and managed grants.</p>
 
       <button
         className="px-4 py-2 bg-brand-primary text-white rounded hover:bg-brand-dark"
@@ -48,8 +60,8 @@ const Dashboard: React.FC = () => {
               <h3 className="text-xl font-bold">{grant.name}</h3>
               <p className="text-gray-600">{grant.amount}</p>
               <p className="mt-2">{grant.description}</p>
-              <p className="mt-2 text-sm text-gray-500">
-                Status: {grant.status}
+              <p className="mt-2 text-sm text-gray-500 flex items-center gap-2">
+                Status: <span className={statusBadge(grant.status)}>{grant.status}</span>
               </p>
             </div>
           ))}
