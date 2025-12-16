@@ -1,11 +1,11 @@
 // src/ManageGrants.tsx
 import React, { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 interface Grant {
   id: string;
-  title?: string;        // made optional to avoid crashes
-  description?: string;  // also optional
+  title?: string;
+  description?: string;
   status: "draft" | "submitted" | "approved" | "rejected";
 }
 
@@ -13,6 +13,7 @@ const ManageGrants: React.FC = () => {
   const [grants, setGrants] = useState<Grant[]>([]);
   const [filter, setFilter] = useState<string>("all");
   const [sort, setSort] = useState<string>("title");
+  const navigate = useNavigate();
 
   useEffect(() => {
     try {
@@ -25,6 +26,25 @@ const ManageGrants: React.FC = () => {
       setGrants([]);
     }
   }, []);
+
+  const saveGrants = (updated: Grant[]) => {
+    setGrants(updated);
+    localStorage.setItem("grants", JSON.stringify(updated));
+  };
+
+  const handleDelete = (id: string) => {
+    const updated = grants.filter((g) => g.id !== id);
+    saveGrants(updated);
+  };
+
+  const handleEdit = (id: string) => {
+    navigate(`/grant/${id}`);
+  };
+
+  const handleAIWriteAssist = (id: string) => {
+    // Stub: replace with your AI integration
+    alert(`AI Write Assist triggered for grant ${id}`);
+  };
 
   const filteredGrants = grants.filter((g) =>
     filter === "all" ? true : g.status === filter
@@ -93,12 +113,34 @@ const ManageGrants: React.FC = () => {
                 </p>
                 <p className="text-sm font-medium">Status: {grant.status}</p>
               </div>
-              <Link
-                to={`/grant/${grant.id}`}
-                className="px-3 py-1 bg-brand-primary text-white rounded hover:bg-brand-dark"
-              >
-                View
-              </Link>
+              <div className="flex gap-2">
+                <Link
+                  to={`/grant/${grant.id}`}
+                  className="px-3 py-1 bg-brand-primary text-white rounded hover:bg-brand-dark"
+                >
+                  View
+                </Link>
+                {grant.status === "draft" && (
+                  <button
+                    onClick={() => handleEdit(grant.id)}
+                    className="px-3 py-1 bg-yellow-500 text-white rounded hover:bg-yellow-600"
+                  >
+                    Edit
+                  </button>
+                )}
+                <button
+                  onClick={() => handleDelete(grant.id)}
+                  className="px-3 py-1 bg-red-600 text-white rounded hover:bg-red-700"
+                >
+                  Delete
+                </button>
+                <button
+                  onClick={() => handleAIWriteAssist(grant.id)}
+                  className="px-3 py-1 bg-purple-600 text-white rounded hover:bg-purple-700"
+                >
+                  AI Write Assist
+                </button>
+              </div>
             </li>
           ))}
         </ul>
