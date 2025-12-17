@@ -1,31 +1,31 @@
 // src/ProfileForm.tsx
 import React, { useEffect, useState } from "react";
 
-interface Profile {
+// Exported interface so it can be imported elsewhere
+export interface OrgProfile {
   name: string;
   email: string;
   organization: string;
 }
 
 const ProfileForm: React.FC = () => {
-  const [profile, setProfile] = useState<Profile>({
+  const [profile, setProfile] = useState<OrgProfile>({
     name: "",
     email: "",
     organization: "",
   });
-  const [initialProfile, setInitialProfile] = useState<Profile>({
+  const [initialProfile, setInitialProfile] = useState<OrgProfile>({
     name: "",
     email: "",
     organization: "",
   });
   const [isDirty, setIsDirty] = useState(false);
 
-  // Load profile from localStorage
   useEffect(() => {
     try {
       const raw = localStorage.getItem("profile");
       if (raw) {
-        const parsed: Profile = JSON.parse(raw);
+        const parsed: OrgProfile = JSON.parse(raw);
         setProfile(parsed);
         setInitialProfile(parsed);
       }
@@ -34,7 +34,6 @@ const ProfileForm: React.FC = () => {
     }
   }, []);
 
-  // Warn if closing tab or refreshing with unsaved changes
   useEffect(() => {
     const handleBeforeUnload = (e: BeforeUnloadEvent) => {
       if (isDirty) {
@@ -46,7 +45,7 @@ const ProfileForm: React.FC = () => {
     return () => window.removeEventListener("beforeunload", handleBeforeUnload);
   }, [isDirty]);
 
-  const handleChange = (field: keyof Profile, value: string) => {
+  const handleChange = (field: keyof OrgProfile, value: string) => {
     const updated = { ...profile, [field]: value };
     setProfile(updated);
     setIsDirty(

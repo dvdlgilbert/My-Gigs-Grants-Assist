@@ -14,7 +14,7 @@ import Dashboard from "./Dashboard";
 import ManageGrants from "./ManageGrants";
 import ApiKeyInput from "./components/ApiKeyInput";
 import Home from "./Home";
-import ProfileForm, { OrgProfile } from "./ProfileForm";
+import ProfileForm, { OrgProfile } from "./ProfileForm"; // ✅ import OrgProfile type
 import GrantDetail from "./GrantDetail";
 
 // Stubbed real API fetch function — replace with your actual API call
