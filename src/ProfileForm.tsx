@@ -1,26 +1,27 @@
 // src/ProfileForm.tsx
 import React, { useEffect, useState } from "react";
 
-// Exported interface so it can be imported elsewhere
 export interface OrgProfile {
   name: string;
   email: string;
   organization: string;
 }
 
-const ProfileForm: React.FC = () => {
-  const [profile, setProfile] = useState<OrgProfile>({
-    name: "",
-    email: "",
-    organization: "",
-  });
-  const [initialProfile, setInitialProfile] = useState<OrgProfile>({
-    name: "",
-    email: "",
-    organization: "",
-  });
-  const [isDirty, setIsDirty] = useState(false);
+interface ProfileFormProps {
+  initial?: OrgProfile;
+  onSave: (data: OrgProfile) => void;
+  onCancel: () => void;
+}
 
+const ProfileForm: React.FC<ProfileFormProps> = ({ initial, onSave, onCancel }) => {
+  const [profile, setProfile] = useState<OrgProfile>(
+    initial || { name: "", email: "", organization: "" }
+  );
+  const [initialProfile, setInitialProfile] = useState<OrgProfile>(
+    initial || { name: "", email: "", organization: "" }
+  );
+  const [isDirty, setIsDirty] = useState(false);
+  
   useEffect(() => {
     try {
       const raw = localStorage.getItem("profile");
