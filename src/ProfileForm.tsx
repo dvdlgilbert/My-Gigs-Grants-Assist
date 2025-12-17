@@ -1,120 +1,132 @@
 // src/ProfileForm.tsx
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
-export interface OrgProfile {
-  orgName: string;
-  mission: string;
-  goals: string;
-  needs: string;
-  address: string;
-  contactName: string;
-  contactEmail: string;
-  contactPhone: string;
-  website: string;
-  taxId: string;
+interface Profile {
+  name: string;
+  email: string;
+  organization: string;
 }
 
-interface ProfileFormProps {
-  initial?: OrgProfile;
-  onSave: (data: OrgProfile) => void;
-  onCancel: () => void;
-}
-
-const ProfileForm: React.FC<ProfileFormProps> = ({ initial, onSave, onCancel }) => {
-  const [form, setForm] = useState<OrgProfile>({
-    orgName: initial?.orgName || "",
-    mission: initial?.mission || "",
-    goals: initial?.goals || "",
-    needs: initial?.needs || "",
-    address: initial?.address || "",
-    contactName: initial?.contactName || "",
-    contactEmail: initial?.contactEmail || "",
-    contactPhone: initial?.contactPhone || "",
-    website: initial?.website || "",
-    taxId: initial?.taxId || "",
+const ProfileForm: React.FC = () => {
+  const [profile, setProfile] = useState<Profile>({
+    name: "",
+    email: "",
+    organization: "",
   });
+  const [initialProfile, setInitialProfile] = useState<Profile>({
+    name: "",
+    email: "",
+    organization: "",
+  });
+  const [isDirty, setIsDirty] = useState(false);
 
-  const [saved, setSaved] = useState(false);
+  // Load profile from localStorage
+  useEffect(() => {
+    try {
+      const raw = localStorage.getItem("profile");
+      if (raw) {
+        const parsed: Profile = JSON.parse(raw);
+        setProfile(parsed);
+        setInitialProfile(parsed);
+      }
+    } catch (e) {
+      console.error("Failed to parse profile:", e);
+    }
+  }, []);
 
-  const update = (field: keyof OrgProfile) => (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
-  ) => {
-    setForm({ ...form, [field]: e.target.value });
-    setSaved(false);
+  // Warn if closing tab or refreshing with unsaved changes
+  useEffect(() => {
+    const handleBeforeUnload = (e: BeforeUnloadEvent) => {
+      if (isDirty) {
+        e.preventDefault();
+        e.returnValue = "";
+      }
+    };
+    window.addEventListener("beforeunload", handleBeforeUnload);
+    return () => window.removeEventListener("beforeunload", handleBeforeUnload);
+  }, [isDirty]);
+
+  const handleChange = (field: keyof Profile, value: string) => {
+    const updated = { ...profile, [field]: value };
+    setProfile(updated);
+    setIsDirty(
+      updated.name !== initialProfile.name ||
+        updated.email !== initialProfile.email ||
+        updated.organization !== initialProfile.organization
+    );
   };
 
-  const save = () => {
-    onSave(form);
-    setSaved(true);
+  const handleSave = () => {
+    localStorage.setItem("profile", JSON.stringify(profile));
+    setInitialProfile(profile);
+    setIsDirty(false);
+  };
+
+  const handleResetToSaved = () => {
+    if (isDirty) {
+      const confirmLeave = window.confirm(
+        "You have unsaved changes. Do you want to discard them and revert to the last saved profile?"
+      );
+      if (!confirmLeave) return;
+    }
+    setProfile(initialProfile);
+    setIsDirty(false);
   };
 
   return (
-    <div className="space-y-6">
-      <h2 className="text-2xl font-semibold">Organization Profile</h2>
+    <div className="p-6 bg-white shadow rounded">
+      <h2 className="text-2xl font-bold mb-4">Profile</h2>
 
-      {saved && (
-        <div className="flex items-center justify-between p-3 bg-green-100 border border-green-400 text-green-700 rounded">
-          <span>✅ Profile saved successfully!</span>
-          <button
-            className="text-green-700 font-bold ml-4"
-            onClick={() => setSaved(false)}
-          >
-            ✕
-          </button>
+      <div className="space-y-4">
+        <div>
+          <label className="block font-medium">Name</label>
+          <input
+            type="text"
+            value={profile.name}
+            onChange={(e) => handleChange("name", e.target.value)}
+            className="w-full border rounded px-2 py-1"
+          />
         </div>
-      )}
 
-      {/* Full form always visible */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div>
-          <label className="block text-sm text-gray-600">Organization Name</label>
-          <input className="mt-1 w-full border rounded p-2" value={form.orgName} onChange={update("orgName")} />
+          <label className="block font-medium">Email</label>
+          <input
+            type="email"
+            value={profile.email}
+            onChange={(e) => handleChange("email", e.target.value)}
+            className="w-full border rounded px-2 py-1"
+          />
         </div>
+
         <div>
-          <label className="block text-sm text-gray-600">Website</label>
-          <input className="mt-1 w-full border rounded p-2" value={form.website} onChange={update("website")} />
-        </div>
-        <div className="md:col-span-2">
-          <label className="block text-sm text-gray-600">Mission</label>
-          <textarea className="mt-1 w-full border rounded p-2" rows={3} value={form.mission} onChange={update("mission")} />
-        </div>
-        <div className="md:col-span-2">
-          <label className="block text-sm text-gray-600">Goals</label>
-          <textarea className="mt-1 w-full border rounded p-2" rows={3} value={form.goals} onChange={update("goals")} />
-        </div>
-        <div className="md:col-span-2">
-          <label className="block text-sm text-gray-600">Needs</label>
-          <textarea className="mt-1 w-full border rounded p-2" rows={3} value={form.needs} onChange={update("needs")} />
-        </div>
-        <div className="md:col-span-2">
-          <label className="block text-sm text-gray-600">Address</label>
-          <input className="mt-1 w-full border rounded p-2" value={form.address} onChange={update("address")} />
-        </div>
-        <div>
-          <label className="block text-sm text-gray-600">Primary Contact Name</label>
-          <input className="mt-1 w-full border rounded p-2" value={form.contactName} onChange={update("contactName")} />
-        </div>
-        <div>
-          <label className="block text-sm text-gray-600">Contact Email</label>
-          <input className="mt-1 w-full border rounded p-2" value={form.contactEmail} onChange={update("contactEmail")} />
-        </div>
-        <div>
-          <label className="block text-sm text-gray-600">Contact Phone</label>
-          <input className="mt-1 w-full border rounded p-2" value={form.contactPhone} onChange={update("contactPhone")} />
-        </div>
-        <div>
-          <label className="block text-sm text-gray-600">IRS EIN (501c3)</label>
-          <input className="mt-1 w-full border rounded p-2" value={form.taxId} onChange={update("taxId")} />
+          <label className="block font-medium">Organization</label>
+          <input
+            type="text"
+            value={profile.organization}
+            onChange={(e) => handleChange("organization", e.target.value)}
+            className="w-full border rounded px-2 py-1"
+          />
         </div>
       </div>
 
-      <div className="flex gap-3">
-        <button className="px-4 py-2 bg-brand-primary text-white rounded hover:bg-brand-dark" onClick={save}>
+      <div className="mt-6 flex gap-3 items-center">
+        <button
+          onClick={handleSave}
+          className="px-4 py-2 bg-brand-primary text-white rounded hover:bg-brand-dark"
+        >
           Save Profile
         </button>
-        <button className="px-4 py-2 bg-white border rounded hover:bg-gray-50" onClick={onCancel}>
-          Back to Dashboard
+        <button
+          onClick={handleResetToSaved}
+          className="px-4 py-2 bg-gray-200 rounded hover:bg-gray-300"
+        >
+          Revert to Last Saved
         </button>
+        {isDirty && (
+          <span className="text-sm text-yellow-700">
+            Unsaved changes — remember to save.
+          </span>
+        )}
       </div>
     </div>
   );
