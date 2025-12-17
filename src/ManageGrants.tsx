@@ -39,17 +39,22 @@ const ManageGrants: React.FC = () => {
     };
     const updated = [...grants, newGrant];
     saveGrants(updated);
-    // Navigate to editable grant form
     navigate(`/grant/${newGrant.id}`);
   };
 
   const handleEdit = (id: string) => {
-    // Navigate to editable grant form
     navigate(`/grant/${id}`);
   };
 
   const handleDelete = (id: string) => {
     const updated = grants.filter((g) => g.id !== id);
+    saveGrants(updated);
+  };
+
+  const handleStatusChange = (id: string, newStatus: Grant["status"]) => {
+    const updated = grants.map((g) =>
+      g.id === id ? { ...g, status: newStatus } : g
+    );
     saveGrants(updated);
   };
 
@@ -129,10 +134,27 @@ const ManageGrants: React.FC = () => {
                     : "No description provided."}
                 </p>
                 <p className="text-sm font-medium mb-4">Status: {grant.status}</p>
+
+                {/* Status toggle */}
+                <label className="block text-sm mb-2">
+                  Change Status:
+                  <select
+                    value={grant.status}
+                    onChange={(e) =>
+                      handleStatusChange(grant.id, e.target.value as Grant["status"])
+                    }
+                    className="ml-2 border rounded px-2 py-1"
+                  >
+                    <option value="draft">Draft</option>
+                    <option value="submitted">Submitted</option>
+                    <option value="approved">Approved</option>
+                    <option value="rejected">Rejected</option>
+                  </select>
+                </label>
               </div>
 
               <div className="flex flex-wrap gap-2 mt-auto">
-                {grant.status === "draft" && (
+                {grant.status.toLowerCase() === "draft" && (
                   <button
                     onClick={() => handleEdit(grant.id)}
                     className="px-3 py-1 bg-yellow-500 text-white rounded hover:bg-yellow-600"
