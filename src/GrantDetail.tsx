@@ -38,6 +38,12 @@ const GrantDetail: React.FC = () => {
     setGrant(updated);
   };
 
+  const handleChange = (field: keyof Grant, value: string) => {
+    if (grant && grant.status === "draft") {
+      saveGrant({ ...grant, [field]: value });
+    }
+  };
+
   const handleSubmit = () => {
     if (grant) {
       saveGrant({ ...grant, status: "submitted" });
@@ -53,6 +59,14 @@ const GrantDetail: React.FC = () => {
   const handleReject = () => {
     if (grant) {
       saveGrant({ ...grant, status: "rejected" });
+    }
+  };
+
+  const handleAIWriteAssist = () => {
+    if (grant && grant.status === "draft") {
+      // Example AI integration: append generated text to description
+      const aiSuggestion = "This grant supports community development initiatives with measurable outcomes.";
+      saveGrant({ ...grant, description: grant.description + " " + aiSuggestion });
     }
   };
 
@@ -72,18 +86,44 @@ const GrantDetail: React.FC = () => {
 
   return (
     <div className="p-6 bg-white shadow rounded">
-      <h2 className="text-2xl font-bold mb-4">{grant.title}</h2>
-      <p className="mb-4">{grant.description}</p>
+      <h2 className="text-2xl font-bold mb-4">
+        {grant.title || "(Untitled Grant)"}
+      </h2>
       <p className="mb-4 font-semibold">Status: {grant.status}</p>
 
-      {/* Actions based on status */}
       {grant.status === "draft" && (
-        <button
-          onClick={handleSubmit}
-          className="px-4 py-2 bg-brand-primary text-white rounded hover:bg-brand-dark"
-        >
-          Submit Grant
-        </button>
+        <div className="space-y-4">
+          <div>
+            <label className="block font-medium">Title</label>
+            <input
+              type="text"
+              value={grant.title}
+              onChange={(e) => handleChange("title", e.target.value)}
+              className="w-full border rounded px-2 py-1"
+            />
+          </div>
+          <div>
+            <label className="block font-medium">Description</label>
+            <textarea
+              value={grant.description}
+              onChange={(e) => handleChange("description", e.target.value)}
+              className="w-full border rounded px-2 py-1"
+              rows={5}
+            />
+            <button
+              onClick={handleAIWriteAssist}
+              className="mt-2 px-3 py-1 bg-purple-600 text-white rounded hover:bg-purple-700"
+            >
+              AI Write Assist
+            </button>
+          </div>
+          <button
+            onClick={handleSubmit}
+            className="px-4 py-2 bg-brand-primary text-white rounded hover:bg-brand-dark"
+          >
+            Submit Grant
+          </button>
+        </div>
       )}
 
       {grant.status === "submitted" && (

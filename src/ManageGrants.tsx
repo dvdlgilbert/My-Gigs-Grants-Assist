@@ -1,6 +1,6 @@
 // src/ManageGrants.tsx
 import React, { useEffect, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 interface Grant {
   id: string;
@@ -18,9 +18,7 @@ const ManageGrants: React.FC = () => {
   useEffect(() => {
     try {
       const raw = localStorage.getItem("grants");
-      if (raw) {
-        setGrants(JSON.parse(raw));
-      }
+      if (raw) setGrants(JSON.parse(raw));
     } catch (err) {
       console.error("Failed to parse grants:", err);
       setGrants([]);
@@ -32,29 +30,27 @@ const ManageGrants: React.FC = () => {
     localStorage.setItem("grants", JSON.stringify(updated));
   };
 
-  const handleDelete = (id: string) => {
-    const updated = grants.filter((g) => g.id !== id);
-    saveGrants(updated);
-  };
-
-  const handleEdit = (id: string) => {
-    navigate(`/grant/${id}`); // takes you to GrantDetail fields
-  };
-
-  const handleAIWriteAssist = (id: string) => {
-    alert(`AI Write Assist triggered for grant ${id}`);
-  };
-
   const handleCreateNew = () => {
     const newGrant: Grant = {
       id: Date.now().toString(),
       title: "",
       description: "",
-      status: "draft"
+      status: "draft",
     };
     const updated = [...grants, newGrant];
     saveGrants(updated);
+    // Navigate to editable grant form
     navigate(`/grant/${newGrant.id}`);
+  };
+
+  const handleEdit = (id: string) => {
+    // Navigate to editable grant form
+    navigate(`/grant/${id}`);
+  };
+
+  const handleDelete = (id: string) => {
+    const updated = grants.filter((g) => g.id !== id);
+    saveGrants(updated);
   };
 
   const filteredGrants = grants.filter((g) =>
@@ -85,7 +81,6 @@ const ManageGrants: React.FC = () => {
         </button>
       </div>
 
-      {/* Filter & Sort controls */}
       <div className="flex gap-6 mb-6">
         <label>
           Filter:
@@ -115,27 +110,28 @@ const ManageGrants: React.FC = () => {
         </label>
       </div>
 
-      {/* Grant cards */}
       {sortedGrants.length === 0 ? (
         <p>No grants found.</p>
       ) : (
         <div className="grid gap-4 md:grid-cols-2">
           {sortedGrants.map((grant) => (
-            <div key={grant.id} className="border rounded shadow p-4 flex flex-col justify-between">
+            <div
+              key={grant.id}
+              className="border rounded shadow p-4 flex flex-col justify-between"
+            >
               <div>
-                <h3 className="font-semibold text-lg">{grant.title || "(Untitled Grant)"}</h3>
+                <h3 className="font-semibold text-lg">
+                  {grant.title && grant.title.trim() !== "" ? grant.title : "(Untitled Grant)"}
+                </h3>
                 <p className="text-sm text-gray-600 mb-2">
-                  {grant.description || "No description provided."}
+                  {grant.description && grant.description.trim() !== ""
+                    ? grant.description
+                    : "No description provided."}
                 </p>
                 <p className="text-sm font-medium mb-4">Status: {grant.status}</p>
               </div>
+
               <div className="flex flex-wrap gap-2 mt-auto">
-                <Link
-                  to={`/grant/${grant.id}`}
-                  className="px-3 py-1 bg-blue-600 text-white rounded hover:bg-blue-700"
-                >
-                  View
-                </Link>
                 {grant.status === "draft" && (
                   <button
                     onClick={() => handleEdit(grant.id)}
@@ -151,10 +147,10 @@ const ManageGrants: React.FC = () => {
                   Delete
                 </button>
                 <button
-                  onClick={() => handleAIWriteAssist(grant.id)}
-                  className="px-3 py-1 bg-purple-600 text-white rounded hover:bg-purple-700"
+                  onClick={() => navigate(`/grant/${grant.id}`)}
+                  className="px-3 py-1 bg-blue-600 text-white rounded hover:bg-blue-700"
                 >
-                  AI Write Assist
+                  View
                 </button>
               </div>
             </div>
