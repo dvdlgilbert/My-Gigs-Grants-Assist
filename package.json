@@ -1,8 +1,8 @@
-{{
+{
   "name": "my-gigs-grants-assist",
   "version": "1.0.0",
   "private": true,
-  "homepage": "https://dvdlgilbert.github.io/My-Gigs-Grants-Assist/",
+  "homepage": "https://dvdlgilbert.github.io/My-Gigs-Grants-Assist",
   "dependencies": {
     "@google/genai": "^1.32.0",
     "react": "^18.3.1",
