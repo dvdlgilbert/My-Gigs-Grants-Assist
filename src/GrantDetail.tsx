@@ -65,8 +65,14 @@ const GrantDetail: React.FC = () => {
   const handleAIWriteAssist = () => {
     if (grant && grant.status === "draft") {
       // Example AI integration: append generated text to description
-      const aiSuggestion = "This grant supports community development initiatives with measurable outcomes.";
-      saveGrant({ ...grant, description: grant.description + " " + aiSuggestion });
+      const aiSuggestion =
+        "This grant proposal emphasizes measurable community impact and sustainable outcomes.";
+      saveGrant({
+        ...grant,
+        description: grant.description
+          ? grant.description + " " + aiSuggestion
+          : aiSuggestion,
+      });
     }
   };
 
@@ -144,11 +150,15 @@ const GrantDetail: React.FC = () => {
       )}
 
       {grant.status === "approved" && (
-        <p className="text-green-700 font-semibold">✅ This grant has been approved.</p>
+        <p className="text-green-700 font-semibold">
+          ✅ This grant has been approved.
+        </p>
       )}
 
       {grant.status === "rejected" && (
-        <p className="text-red-700 font-semibold">❌ This grant has been rejected.</p>
+        <p className="text-red-700 font-semibold">
+          ❌ This grant has been rejected.
+        </p>
       )}
 
       <div className="mt-6">

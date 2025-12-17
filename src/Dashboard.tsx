@@ -4,108 +4,67 @@ import { useNavigate } from "react-router-dom";
 
 interface Grant {
   id: string;
-  name: string;
-  amount: string;
-  description: string;
-  status: "Draft" | "Submitted" | "Approved";
+  title?: string;
+  description?: string;
+  status: "draft" | "submitted" | "approved" | "rejected";
 }
 
 const Dashboard: React.FC = () => {
   const [grants, setGrants] = useState<Grant[]>([]);
-  const [searchTerm, setSearchTerm] = useState("");
-  const [statusFilter, setStatusFilter] = useState<Grant["status"] | "All">("All");
   const navigate = useNavigate();
 
-  const loadGrants = () => {
-    const raw = localStorage.getItem("grants");
-    if (raw) {
-      setGrants(JSON.parse(raw));
-    } else {
+  useEffect(() => {
+    try {
+      const raw = localStorage.getItem("grants");
+      if (raw) {
+        setGrants(JSON.parse(raw));
+      }
+    } catch (err) {
+      console.error("Failed to parse grants:", err);
       setGrants([]);
     }
-  };
-
-  useEffect(() => {
-    loadGrants();
   }, []);
 
-  const statusBadge = (status: Grant["status"]) => {
-    const base = "px-2 py-1 rounded-full text-xs font-semibold";
-    switch (status) {
-      case "Draft":
-        return `${base} bg-gray-500 text-white`;
-      case "Submitted":
-        return `${base} bg-blue-600 text-white`;
-      case "Approved":
-        return `${base} bg-green-600 text-white`;
-      default:
-        return base;
-    }
-  };
-
-  // Apply search + filter
-  const filteredGrants = grants.filter((grant) => {
-    const matchesSearch =
-      grant.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      grant.description.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchesStatus =
-      statusFilter === "All" ? true : grant.status === statusFilter;
-    return matchesSearch && matchesStatus;
-  });
+  const countByStatus = (status: Grant["status"]) =>
+    grants.filter((g) => g.status?.toLowerCase() === status).length;
 
   return (
-    <div className="space-y-4">
-      <h2 className="text-2xl font-semibold">Dashboard</h2>
-      <p className="text-gray-700">Overview of your saved and managed grants.</p>
+    <div className="p-6 bg-white shadow rounded">
+      <h2 className="text-2xl font-bold mb-4">Dashboard</h2>
 
-      <button
-        className="px-4 py-2 bg-brand-primary text-white rounded hover:bg-brand-dark"
-        onClick={loadGrants}
-      >
-        Refresh Grants
-      </button>
-
-      {/* Search + Filter controls */}
-      <div className="flex flex-col md:flex-row gap-3 mt-4">
-        <input
-          type="text"
-          placeholder="Search grants..."
-          className="border rounded p-2 flex-1"
-          value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
-        />
-        <select
-          className="border rounded p-2 md:w-48"
-          value={statusFilter}
-          onChange={(e) => setStatusFilter(e.target.value as Grant["status"] | "All")}
-        >
-          <option value="All">All Statuses</option>
-          <option value="Draft">Draft</option>
-          <option value="Submitted">Submitted</option>
-          <option value="Approved">Approved</option>
-        </select>
+      <div className="grid grid-cols-2 gap-4 mb-6">
+        <div className="p-4 border rounded bg-gray-50">
+          <p className="font-semibold">Draft Grants</p>
+          <p>{countByStatus("draft")}</p>
+        </div>
+        <div className="p-4 border rounded bg-gray-50">
+          <p className="font-semibold">Submitted Grants</p>
+          <p>{countByStatus("submitted")}</p>
+        </div>
+        <div className="p-4 border rounded bg-gray-50">
+          <p className="font-semibold">Approved Grants</p>
+          <p>{countByStatus("approved")}</p>
+        </div>
+        <div className="p-4 border rounded bg-gray-50">
+          <p className="font-semibold">Rejected Grants</p>
+          <p>{countByStatus("rejected")}</p>
+        </div>
       </div>
 
-      {filteredGrants.length === 0 ? (
-        <p className="text-gray-500">No grants match your search/filter.</p>
-      ) : (
-        <div className="grid md:grid-cols-2 gap-4 mt-4">
-          {filteredGrants.map((grant) => (
-            <div
-              key={grant.id}
-              className="border rounded p-4 shadow cursor-pointer hover:bg-gray-50"
-              onClick={() => navigate(`/grant/${grant.id}`)}
-            >
-              <h3 className="text-xl font-bold">{grant.name}</h3>
-              <p className="text-gray-600">{grant.amount}</p>
-              <p className="mt-2">{grant.description}</p>
-              <p className="mt-2 text-sm text-gray-500 flex items-center gap-2">
-                Status: <span className={statusBadge(grant.status)}>{grant.status}</span>
-              </p>
-            </div>
-          ))}
-        </div>
-      )}
+      <div className="flex gap-4">
+        <button
+          onClick={() => navigate("/home")}
+          className="px-4 py-2 bg-brand-primary text-white rounded hover:bg-brand-dark"
+        >
+          Back to Home
+        </button>
+        <button
+          onClick={() => navigate("/manage")}
+          className="px-4 py-2 bg-gray-200 rounded hover:bg-gray-300"
+        >
+          Go to Manage Grants
+        </button>
+      </div>
     </div>
   );
 };
