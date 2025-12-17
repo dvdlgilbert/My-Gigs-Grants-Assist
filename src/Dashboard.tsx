@@ -28,6 +28,19 @@ const Dashboard: React.FC = () => {
   const countByStatus = (status: Grant["status"]) =>
     grants.filter((g) => g.status?.toLowerCase() === status).length;
 
+  const handleCreateNew = () => {
+    const newGrant: Grant = {
+      id: Date.now().toString(),
+      title: "",
+      description: "",
+      status: "draft",
+    };
+    const updated = [...grants, newGrant];
+    setGrants(updated);
+    localStorage.setItem("grants", JSON.stringify(updated));
+    navigate(`/grant/${newGrant.id}`);
+  };
+
   return (
     <div className="p-6 bg-white shadow rounded">
       <h2 className="text-2xl font-bold mb-4">Dashboard</h2>
@@ -63,6 +76,12 @@ const Dashboard: React.FC = () => {
           className="px-4 py-2 bg-gray-200 rounded hover:bg-gray-300"
         >
           Go to Manage Grants
+        </button>
+        <button
+          onClick={handleCreateNew}
+          className="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700"
+        >
+          + New Grant
         </button>
       </div>
     </div>
