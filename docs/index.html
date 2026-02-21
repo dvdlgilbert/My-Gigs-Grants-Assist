@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>My Gigs - Grants Assist</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              'brand-primary': '#0284c7', // sky-600
+              'brand-secondary': '#f0f9ff', // sky-50
+              'brand-accent': '#0ea5e9', // sky-500
+              'brand-dark': '#0c4a6e', // sky-900
+            },
+          },
+        },
+      }
+    </script>
+
+
+<link rel="stylesheet" href="/index.css">
+<script type="importmap">
+{
+  "imports": {
+    "react": "https://aistudiocdn.com/react@^19.2.0",
+    "react-dom/": "https://aistudiocdn.com/react-dom@^19.2.0/",
+    "react/": "https://aistudiocdn.com/react@^19.2.0/",
+    "@google/genai": "https://aistudiocdn.com/@google/genai@^1.29.1"
+  }
+}
+</script>
+  <script type="module" crossorigin src="/assets/index-C8NyAWC6.js"></script>
+</head>
+  <body class="bg-slate-100">
+    <div id="root"></div>
+    <!--
+      This script tag uses the esm.sh service to fetch your index.tsx file directly
+      from your GitHub repository. esm.sh transpiles the TSX code into standard JavaScript
+      on its servers and sends it to the browser with the correct Content-Type header,
+      bypassing the GitHub Pages MIME type issue. The ?v=4 parameter is for cache-busting.
+    -->
+    <script type="module" src="https://esm.sh/gh/dvdlgilbert/My-Gigs-Grants-Assist/index.tsx?bundle&v=6"></script>
+</body>
+</html>
